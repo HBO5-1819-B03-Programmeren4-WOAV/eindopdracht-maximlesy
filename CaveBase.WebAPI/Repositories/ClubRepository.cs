@@ -13,5 +13,20 @@ namespace CaveBase.WebAPI.Repositories
     public class ClubRepository : Repository<Club>
     {
         public ClubRepository(CaveServiceContext context) : base(context){ }
+
+        public async Task<List<ClubBasic>> ListBasic()
+        {
+            var clubs = await database.Clubs.Select
+                (c => new ClubBasic
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    City = c.City
+                }
+                )
+                .ToListAsync();
+
+            return clubs;
+        }
     }
 }

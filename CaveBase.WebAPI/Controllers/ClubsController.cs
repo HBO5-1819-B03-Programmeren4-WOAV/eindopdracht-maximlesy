@@ -27,6 +27,13 @@ namespace CaveBase.WebAPI.Controllers
             return Ok(await repo.ListAll());
         }
 
+        //GET: api/clubs/basic
+        [HttpGet("basic")]
+        public async Task<IActionResult> GetClubsBasic()
+        {
+            return Ok(await repo.ListBasic());
+        }
+
         //GET: api/clubs/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetClubById(int id)
