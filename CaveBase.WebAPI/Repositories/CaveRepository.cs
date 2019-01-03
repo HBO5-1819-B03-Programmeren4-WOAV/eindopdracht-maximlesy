@@ -51,7 +51,8 @@ namespace CaveBase.WebAPI.Repositories
                     ClubId = c.ResponsibleClub.Id,
                     ClubName = c.ResponsibleClub.Name,
                     CountryId = c.Country.Id,
-                    CountryName = c.Country.Name
+                    CountryName = c.Country.Name,
+                    PhotoName = c.PhotoName
                 }
                 )
                 .FirstOrDefault(c => c.Id == id);

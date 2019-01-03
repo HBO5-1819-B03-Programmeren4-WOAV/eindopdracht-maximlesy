@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using CaveBase.Library.DTO;
 using CaveBase.WebAPI.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +39,24 @@ namespace CaveBase.WebAPI.Controllers
         public IActionResult GetCaveById(int id)
         {
             return Ok(repo.GetById(id));
+        }
+
+        // GET: api/caves/imagebyname/{filename}
+        [HttpGet]
+        [Route("imagebyname/{filename}")]
+        public IActionResult GetImageByFileName(string filename)
+        {
+            var image = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", filename);
+            return PhysicalFile(image, "image/jpg");
+        }
+
+        // GET: api/caves/imagebyid/{caveId}
+        [HttpGet]
+        [Route("ImageById/{caveId}")]
+        public IActionResult ImageById(int caveId)
+        {
+            CaveDetail cave = repo.GetById(caveId);
+            return GetImageByFileName(cave.PhotoName);
         }
     }
 }
