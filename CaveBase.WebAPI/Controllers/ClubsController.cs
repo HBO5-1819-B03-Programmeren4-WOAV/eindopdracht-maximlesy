@@ -22,24 +22,16 @@ namespace CaveBase.WebAPI.Controllers
 
         //GET: api/clubs
         [HttpGet]
-        public IActionResult GetClubs()
+        public async Task<IActionResult> GetClubs()
         {
-            return Ok(repo.All());
-        }
-
-        //GET: api/clubs/basic
-        [HttpGet]
-        [Route("basic")]
-        public IActionResult GetClubsBasic()
-        {
-            return Ok(repo.AllBasic());
+            return Ok(await repo.ListAll());
         }
 
         //GET: api/clubs/{id}
         [HttpGet("{id}")]
-        public IActionResult GetClubById(int id)
+        public async Task<IActionResult> GetClubById(int id)
         {
-            return Ok(repo.GetById(id));
+            return Ok(await repo.GetById(id));
         }
 
         //PUT: api/clubs/{id}
