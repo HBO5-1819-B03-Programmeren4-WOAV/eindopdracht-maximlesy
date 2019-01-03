@@ -20,25 +20,25 @@ namespace CaveBase.WebAPI.Controllers
 
         //GET: api/caves
         [HttpGet]
-        public IActionResult GetCaves()
+        public async Task<IActionResult> GetCaves()
         {
-            return Ok(repo.All());
+            return Ok(await repo.GetAllFullAsList());
         }
 
         //GET: api/caves/basic
         [HttpGet]
         [Route("basic")]
-        public IActionResult GetAllBasic()
+        public async Task<IActionResult> GetAllBasic()
         {
-            return Ok(repo.AllBasic());
+            return Ok(await repo.GetAllBasicAsList());
         }
 
         //GET: api/caves/{id}
         [HttpGet]
         [Route("{id}")]
-        public IActionResult GetCaveById(int id)
+        public async Task<IActionResult> GetCaveById(int id)
         {
-            return Ok(repo.GetById(id));
+            return Ok(await repo.GetById(id));
         }
 
         // GET: api/caves/imagebyname/{filename}
@@ -53,9 +53,9 @@ namespace CaveBase.WebAPI.Controllers
         // GET: api/caves/imagebyid/{caveId}
         [HttpGet]
         [Route("ImageById/{caveId}")]
-        public IActionResult ImageById(int caveId)
+        public async Task<IActionResult> ImageById(int caveId)
         {
-            CaveDetail cave = repo.GetById(caveId);
+            CaveDetail cave = await repo.GetCaveDetailById(caveId);
             return GetImageByFileName(cave.PhotoName);
         }
     }

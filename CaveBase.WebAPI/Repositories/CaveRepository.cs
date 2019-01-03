@@ -1,39 +1,35 @@
 ﻿using CaveBase.Library.DTO;
 using CaveBase.Library.Models;
 using CaveBase.WebAPI.Database;
+using CaveBase.WebAPI.Repositories.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CaveBase.WebAPI.Repositories
 {
-    public class CaveRepository
+    public class CaveRepository : Repository<Cave>
     {
-        private CaveServiceContext database;
+        public CaveRepository(CaveServiceContext context) : base(context) { }
 
-        public CaveRepository(CaveServiceContext context)
+        public async Task<List<Cave>> GetAllFullAsList()
         {
-            database = context;
+            return await GetAll().Include(c => c.ResponsibleClub)
+                                 .Include(c => c.Country)
+                                 .ToListAsync();
         }
 
-        public List<Cave> All()
+        public async Task<List<CaveBasic>> GetAllBasicAsList()
         {
-            return database.Caves
-                           .Include(c => c.Country)
-                           .Include(c => c.ResponsibleClub)
-                           .ToList();
-        }
-
-        public List<CaveBasic> AllBasic()
-        {
-            return database.Caves
+            return await database.Caves
                            .Select(c => new CaveBasic { Id = c.Id, Name = c.Name, Description = c.Description})
-                           .ToList();
+                           .ToListAsync();
         }
 
-        public CaveDetail GetById(int id)
+        public async Task<CaveDetail> GetCaveDetailById(int id)
         {
-            return database.Caves.Select
+            return await database.Caves.Select
                 (c => new CaveDetail
                 {
                     Id = c.Id,
@@ -53,7 +49,7 @@ namespace CaveBase.WebAPI.Repositories
                     PhotoName = c.PhotoName
                 }
                 )
-                .FirstOrDefault(c => c.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
     }
 }
