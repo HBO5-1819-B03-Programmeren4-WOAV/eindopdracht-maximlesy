@@ -21,7 +21,7 @@ namespace CaveBase.WebAPI.Repositories
                 {
                     Id = c.Id,
                     Name = c.Name,
-                    City = c.City
+                    Address = $"{c.Streetname} {c.Housenumber}, {c.PostalCode} {c.City}"
                 }
                 )
                 .ToListAsync();
