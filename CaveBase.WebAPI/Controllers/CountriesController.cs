@@ -21,16 +21,16 @@ namespace CaveBase.WebAPI.Controllers
 
         //GET: api/countries
         [HttpGet]
-        public IActionResult GetCountries()
+        public async Task<IActionResult> GetCountries()
         {
-            return Ok(repo.All());
+            return Ok(await repo.ListAll());
         }
 
         //GET: api/countries/{id}
         [HttpGet("{id}")]
-        public IActionResult GetCountryById(int id)
+        public async Task<IActionResult> GetCountryById(int id)
         {
-            return Ok(repo.GetById(id));
+            return Ok(await repo.GetById(id));
         }
     }
 }
