@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CaveBase.Library.DTO;
+using CaveBase.Library.Models;
+using CaveBase.WebAPI.Controllers.Generic;
 using CaveBase.WebAPI.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,15 +14,14 @@ namespace CaveBase.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CavesController : ControllerBase
+    public class CavesController : GenericCrudController<Cave, CaveRepository>
     {
-        private CaveRepository repo;
+        //Pass onto generic controller
+        public CavesController(CaveRepository repo) : base(repo) { }
 
-        public CavesController(CaveRepository repo) { this.repo = repo; }
-
-        //GET: api/caves
+        // GET: api/caves
         [HttpGet]
-        public async Task<IActionResult> GetCaves()
+        public override async Task<IActionResult> Get()
         {
             return Ok(await repo.GetAllFullAsList());
         }
@@ -33,21 +34,13 @@ namespace CaveBase.WebAPI.Controllers
             return Ok(await repo.GetAllBasicAsList());
         }
 
-        //GET: api/caves/{id}
-        [HttpGet]
-        [Route("{id}")]
-        public async Task<IActionResult> GetCaveById(int id)
-        {
-            return Ok(await repo.GetById(id));
-        }
-
         // GET: api/caves/imagebyname/{filename}
         [HttpGet]
         [Route("imagebyname/{filename}")]
         public IActionResult GetImageByFileName(string filename)
         {
             var image = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", filename);
-            return PhysicalFile(image, "image/jpg");
+            return PhysicalFile(image, "image/jpeg");
         }
 
         // GET: api/caves/imagebyid/{caveId}

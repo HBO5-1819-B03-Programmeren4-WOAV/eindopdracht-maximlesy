@@ -18,10 +18,10 @@ namespace CaveBase.Library.Models
 
         public Difficulty Difficulty { get; set; }
 
-        //public int ClubId { get; set; }
-        public Club ResponsibleClub { get; set; }
+        public int ClubId { get; set; }
+        public Club Club { get; set; }
 
-        //public int CountryId { get; set; }
+        public int CountryId { get; set; }
         public Country Country { get; set; }
 
         public string PhotoName { get; set; }

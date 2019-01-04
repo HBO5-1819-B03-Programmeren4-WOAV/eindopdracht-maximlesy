@@ -15,7 +15,7 @@ namespace CaveBase.WebAPI.Repositories
 
         public async Task<List<Cave>> GetAllFullAsList()
         {
-            return await GetAll().Include(c => c.ResponsibleClub)
+            return await GetAll().Include(c => c.Club)
                                  .Include(c => c.Country)
                                  .ToListAsync();
         }
@@ -42,8 +42,8 @@ namespace CaveBase.WebAPI.Repositories
                     IsDivingCave = c.IsDivingCave,
                     HasFormations = c.HasFormations,
                     Difficulty = c.Difficulty,
-                    ClubId = c.ResponsibleClub.Id,
-                    ClubName = c.ResponsibleClub.Name,
+                    ClubId = c.Club.Id,
+                    ClubName = c.Club.Name,
                     CountryId = c.Country.Id,
                     CountryName = c.Country.Name,
                     PhotoName = c.PhotoName

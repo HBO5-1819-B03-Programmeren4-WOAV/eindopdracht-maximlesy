@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CaveBase.WebAPI.Migrations
 {
     [DbContext(typeof(CaveServiceContext))]
-    [Migration("20190103132741_Initial")]
+    [Migration("20190104140449_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,7 +27,9 @@ namespace CaveBase.WebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CountryId");
+                    b.Property<int>("ClubId");
+
+                    b.Property<int>("CountryId");
 
                     b.Property<DateTime?>("Created")
                         .ValueGeneratedOnAddOrUpdate()
@@ -53,20 +55,18 @@ namespace CaveBase.WebAPI.Migrations
 
                     b.Property<string>("PhotoName");
 
-                    b.Property<int?>("ResponsibleClubId");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("CountryId");
+                    b.HasIndex("ClubId");
 
-                    b.HasIndex("ResponsibleClubId");
+                    b.HasIndex("CountryId");
 
                     b.ToTable("Caves");
 
                     b.HasData(
-                        new { Id = 1, CountryId = 1, Created = new DateTime(2019, 1, 3, 14, 27, 41, 477, DateTimeKind.Local), Depth = 100, Description = "Awesome cave!", Difficulty = 4, HasFormations = true, IsDivingCave = true, Latitude = 30.343432, Length = 123, Longitude = 3.238184, Name = "Fosse Sin Sin", PhotoName = "caveimg1.jpg", ResponsibleClubId = 1 },
-                        new { Id = 2, CountryId = 1, Created = new DateTime(2019, 1, 3, 14, 27, 41, 479, DateTimeKind.Local), Depth = 130, Description = "Bears!", Difficulty = 1, HasFormations = false, IsDivingCave = false, Latitude = 33.433488, Length = 123, Longitude = 8.5941, Name = "Fosse Aux Ours", PhotoName = "caveimg2.jpg", ResponsibleClubId = 1 },
-                        new { Id = 3, CountryId = 1, Created = new DateTime(2019, 1, 3, 14, 27, 41, 479, DateTimeKind.Local), Depth = 4130, Description = "Big cave!", Difficulty = 3, HasFormations = true, IsDivingCave = false, Latitude = 1.777777, Length = 1623, Longitude = 2.777777, Name = "Grottes de Han", PhotoName = "caveimg3.jpg", ResponsibleClubId = 2 }
+                        new { Id = 1, ClubId = 1, CountryId = 1, Created = new DateTime(2019, 1, 4, 15, 4, 48, 841, DateTimeKind.Local), Depth = 100, Description = "Awesome cave!", Difficulty = 4, HasFormations = true, IsDivingCave = true, Latitude = 30.343432, Length = 123, Longitude = 3.238184, Name = "Fosse Sin Sin", PhotoName = "caveimg1.jpg" },
+                        new { Id = 2, ClubId = 1, CountryId = 1, Created = new DateTime(2019, 1, 4, 15, 4, 48, 841, DateTimeKind.Local), Depth = 130, Description = "Bears!", Difficulty = 1, HasFormations = false, IsDivingCave = false, Latitude = 33.433488, Length = 123, Longitude = 8.5941, Name = "Fosse Aux Ours", PhotoName = "caveimg2.jpg" },
+                        new { Id = 3, ClubId = 2, CountryId = 1, Created = new DateTime(2019, 1, 4, 15, 4, 48, 841, DateTimeKind.Local), Depth = 4130, Description = "Big cave!", Difficulty = 3, HasFormations = true, IsDivingCave = false, Latitude = 1.777777, Length = 1623, Longitude = 2.777777, Name = "Grottes de Han", PhotoName = "caveimg3.jpg" }
                     );
                 });
 
@@ -95,8 +95,8 @@ namespace CaveBase.WebAPI.Migrations
                     b.ToTable("Clubs");
 
                     b.HasData(
-                        new { Id = 1, City = "Oostende", Created = new DateTime(2019, 1, 3, 14, 27, 41, 479, DateTimeKind.Local), Housenumber = 22, Name = "Speleo Cascade", PostalCode = 8250, Streetname = "Koebrugstraat" },
-                        new { Id = 2, City = "Brugge", Created = new DateTime(2019, 1, 3, 14, 27, 41, 480, DateTimeKind.Local), Housenumber = 33, Name = "Speleo IVO", PostalCode = 8000, Streetname = "Nijverheidslaan" }
+                        new { Id = 1, City = "Oostende", Created = new DateTime(2019, 1, 4, 15, 4, 48, 839, DateTimeKind.Local), Housenumber = 22, Name = "Speleo Cascade", PostalCode = 8250, Streetname = "Koebrugstraat" },
+                        new { Id = 2, City = "Brugge", Created = new DateTime(2019, 1, 4, 15, 4, 48, 841, DateTimeKind.Local), Housenumber = 33, Name = "Speleo IVO", PostalCode = 8000, Streetname = "Nijverheidslaan" }
                     );
                 });
 
@@ -119,19 +119,21 @@ namespace CaveBase.WebAPI.Migrations
                     b.ToTable("Countries");
 
                     b.HasData(
-                        new { Id = 1, Created = new DateTime(2019, 1, 3, 14, 27, 41, 480, DateTimeKind.Local), Name = "Belgium", ShortName = "BE" }
+                        new { Id = 1, Created = new DateTime(2019, 1, 4, 15, 4, 48, 841, DateTimeKind.Local), Name = "Belgium", ShortName = "BE" }
                     );
                 });
 
             modelBuilder.Entity("CaveBase.Library.Models.Cave", b =>
                 {
+                    b.HasOne("CaveBase.Library.Models.Club", "Club")
+                        .WithMany()
+                        .HasForeignKey("ClubId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("CaveBase.Library.Models.Country", "Country")
                         .WithMany()
-                        .HasForeignKey("CountryId");
-
-                    b.HasOne("CaveBase.Library.Models.Club", "ResponsibleClub")
-                        .WithMany()
-                        .HasForeignKey("ResponsibleClubId");
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
