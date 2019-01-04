@@ -45,11 +45,38 @@ namespace CaveBase.WebAPI.Controllers
 
         // GET: api/caves/imagebyid/{caveId}
         [HttpGet]
-        [Route("ImageById/{caveId}")]
+        [Route("imagebyid/{caveId}")]
         public async Task<IActionResult> ImageById(int caveId)
         {
             CaveDetail cave = await repo.GetCaveDetailById(caveId);
             return GetImageByFileName(cave.PhotoName);
         }
+
+        //POST: api/caves/upload/image
+        [HttpPost]
+        [Route("upload/image")]
+        public async Task<IActionResult> UploadImage(IFormFile uploadImg)
+        {
+            //uploadImg or fileName could be null
+            try
+            {
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", uploadImg.FileName);
+
+                if (uploadImg.Length > 0)
+                {
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await uploadImg.CopyToAsync(stream);
+                    }
+                }
+            }
+            catch
+            {
+                Console.Write("Image could not be uploaded.");
+                return BadRequest(new { success = false });
+            }
+            return Ok(new { filename = uploadImg.FileName, sizeInBytes = uploadImg.Length, success = true });
+        }
+
     }
 }
