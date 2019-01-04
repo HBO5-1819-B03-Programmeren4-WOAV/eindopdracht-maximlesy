@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CaveBase.WebAPI.Database;
 using CaveBase.WebAPI.Repositories;
+using CaveBase.WebAPI.Services.AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,6 +29,12 @@ namespace CaveBase.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //AutoMapper
+            var autoMapperConfig = new AutoMapper.MapperConfiguration(config => { config.AddProfile(new AutoMapperProfileConfiguration()); });
+            var mapper = autoMapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
+            
+            //MVC
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             //SQL Database

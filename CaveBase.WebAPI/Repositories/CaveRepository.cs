@@ -1,4 +1,6 @@
-﻿using CaveBase.Library.DTO;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using CaveBase.Library.DTO;
 using CaveBase.Library.Models;
 using CaveBase.WebAPI.Database;
 using CaveBase.WebAPI.Repositories.Generic;
@@ -9,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace CaveBase.WebAPI.Repositories
 {
-    public class CaveRepository : Repository<Cave>
+    public class CaveRepository : MappingRepository<Cave>
     {
-        public CaveRepository(CaveServiceContext context) : base(context) { }
+        public CaveRepository(CaveServiceContext context, IMapper mapper) : base(context, mapper) { }
 
         public async Task<List<Cave>> GetAllFullAsList()
         {
@@ -22,9 +24,13 @@ namespace CaveBase.WebAPI.Repositories
 
         public async Task<List<CaveBasic>> GetAllBasicAsList()
         {
-            return await database.Caves
-                           .Select(c => new CaveBasic { Id = c.Id, Name = c.Name, Description = c.Description})
-                           .ToListAsync();
+            //OLD CODE TO MAP
+            //return await database.Caves
+            //               .Select(c => new CaveBasic { Id = c.Id, Name = c.Name, Description = c.Description})
+            //               .ToListAsync();
+
+            //CODE USING AUTOMAPPER
+            return await database.Caves.ProjectTo<CaveBasic>(mapper.ConfigurationProvider).ToListAsync();
         }
 
         public async Task<CaveDetail> GetCaveDetailById(int id)
