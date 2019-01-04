@@ -37,6 +37,8 @@ namespace CaveBase.WebAPI
             services.AddScoped<CaveRepository>();
             services.AddScoped<ClubRepository>();
             services.AddScoped<CountryRepository>();
+            services.AddScoped<CaverRepository>();
+            services.AddScoped<DifficultyRatingRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

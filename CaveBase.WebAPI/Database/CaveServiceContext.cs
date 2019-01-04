@@ -12,6 +12,8 @@ namespace CaveBase.WebAPI.Database
         public DbSet<Cave> Caves { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<Club> Clubs { get; set; }
+        public DbSet<Caver> Cavers { get; set; }
+        public DbSet<DifficultyRating> DifficultyRatings { get; set; }
 
         public CaveServiceContext(DbContextOptions<CaveServiceContext> options) : base(options) { }
 
@@ -40,8 +42,28 @@ namespace CaveBase.WebAPI.Database
                             Housenumber = 33,
                             PostalCode = 8000
                         }
-
                         );
+
+            modelbuilder.Entity<Caver>()
+                        .ToTable("Cavers")
+                        .HasData(
+                            new Caver { Id = 1, FirstName = "Maxim", LastName = "Lesy" },
+                            new Caver { Id = 2, FirstName = "Evi", LastName = "De Baets" },
+                            new Caver { Id = 3, FirstName = "Charlotte", LastName = "Janssens" });
+
+            modelbuilder.Entity<DifficultyRating>()
+                        .ToTable("DifficultyRatings")
+                        .HasData(
+                            new DifficultyRating { Id = 1, CaveId = 1, CaverId = 1, Difficulty = Difficulty.Expert },
+                            new DifficultyRating { Id = 2, CaveId = 1, CaverId = 2, Difficulty = Difficulty.Normal },
+                            new DifficultyRating { Id = 3, CaveId = 1, CaverId = 3, Difficulty = Difficulty.Easy },
+                            new DifficultyRating { Id = 4, CaveId = 2, CaverId = 1, Difficulty = Difficulty.Difficult },
+                            new DifficultyRating { Id = 5, CaveId = 2, CaverId = 3, Difficulty = Difficulty.Easy },
+                            new DifficultyRating { Id = 6, CaveId = 2, CaverId = 3, Difficulty = Difficulty.Normal },
+                            new DifficultyRating { Id = 7, CaveId = 3, CaverId = 1, Difficulty = Difficulty.Easy },
+                            new DifficultyRating { Id = 8, CaveId = 3, CaverId = 2, Difficulty = Difficulty.Expert },
+                            new DifficultyRating { Id = 9, CaveId = 3, CaverId = 1, Difficulty = Difficulty.Easy }
+                );
 
             modelbuilder.Entity<Country>()
                         .ToTable("Countries")
@@ -127,7 +149,15 @@ namespace CaveBase.WebAPI.Database
                         .HasDefaultValueSql("GETDATE()")
                         .ValueGeneratedOnAddOrUpdate();
 
+            modelbuilder.Entity<Caver>()
+                        .Property(p => p.Created)
+                        .HasDefaultValueSql("GETDATE()")
+                        .ValueGeneratedOnAddOrUpdate();
 
+            modelbuilder.Entity<DifficultyRating>()
+                        .Property(p => p.Created)
+                        .HasDefaultValueSql("GETDATE()")
+                        .ValueGeneratedOnAddOrUpdate();
         }
     }
 }

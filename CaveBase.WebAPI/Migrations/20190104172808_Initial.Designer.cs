@@ -4,14 +4,16 @@ using CaveBase.WebAPI.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CaveBase.WebAPI.Migrations
 {
     [DbContext(typeof(CaveServiceContext))]
-    partial class CaveServiceContextModelSnapshot : ModelSnapshot
+    [Migration("20190104172808_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,9 +89,9 @@ namespace CaveBase.WebAPI.Migrations
                     b.ToTable("Cavers");
 
                     b.HasData(
-                        new { Id = 1, Created = new DateTime(2019, 1, 4, 18, 28, 8, 816, DateTimeKind.Local), FirstName = "Maxim", LastName = "Lesy" },
-                        new { Id = 2, Created = new DateTime(2019, 1, 4, 18, 28, 8, 816, DateTimeKind.Local), FirstName = "Evi", LastName = "De Baets" },
-                        new { Id = 3, Created = new DateTime(2019, 1, 4, 18, 28, 8, 816, DateTimeKind.Local), FirstName = "Charlotte", LastName = "Janssens" }
+                        new { Id = 1, Created = new DateTime(2019, 1, 4, 18, 28, 8, 815, DateTimeKind.Local), FirstName = "Maxim", LastName = "Lesy" },
+                        new { Id = 2, Created = new DateTime(2019, 1, 4, 18, 28, 8, 815, DateTimeKind.Local), FirstName = "Evi", LastName = "De Baets" },
+                        new { Id = 3, Created = new DateTime(2019, 1, 4, 18, 28, 8, 815, DateTimeKind.Local), FirstName = "Charlotte", LastName = "Janssens" }
                     );
                 });
 
@@ -171,15 +173,15 @@ namespace CaveBase.WebAPI.Migrations
                     b.ToTable("DifficultyRatings");
 
                     b.HasData(
-                        new { Id = 1, CaveId = 1, CaverId = 1, Created = new DateTime(2019, 1, 4, 18, 28, 8, 816, DateTimeKind.Local), Difficulty = 5 },
-                        new { Id = 2, CaveId = 1, CaverId = 2, Created = new DateTime(2019, 1, 4, 18, 28, 8, 816, DateTimeKind.Local), Difficulty = 2 },
-                        new { Id = 3, CaveId = 1, CaverId = 3, Created = new DateTime(2019, 1, 4, 18, 28, 8, 816, DateTimeKind.Local), Difficulty = 1 },
-                        new { Id = 4, CaveId = 2, CaverId = 1, Created = new DateTime(2019, 1, 4, 18, 28, 8, 816, DateTimeKind.Local), Difficulty = 4 },
-                        new { Id = 5, CaveId = 2, CaverId = 3, Created = new DateTime(2019, 1, 4, 18, 28, 8, 816, DateTimeKind.Local), Difficulty = 1 },
-                        new { Id = 6, CaveId = 2, CaverId = 3, Created = new DateTime(2019, 1, 4, 18, 28, 8, 816, DateTimeKind.Local), Difficulty = 2 },
-                        new { Id = 7, CaveId = 3, CaverId = 1, Created = new DateTime(2019, 1, 4, 18, 28, 8, 816, DateTimeKind.Local), Difficulty = 1 },
-                        new { Id = 8, CaveId = 3, CaverId = 2, Created = new DateTime(2019, 1, 4, 18, 28, 8, 816, DateTimeKind.Local), Difficulty = 5 },
-                        new { Id = 9, CaveId = 3, CaverId = 1, Created = new DateTime(2019, 1, 4, 18, 28, 8, 816, DateTimeKind.Local), Difficulty = 1 }
+                        new { Id = 1, CaveId = 1, CaverId = 1, Created = new DateTime(2019, 1, 4, 18, 28, 8, 815, DateTimeKind.Local), Difficulty = 5 },
+                        new { Id = 2, CaveId = 1, CaverId = 2, Created = new DateTime(2019, 1, 4, 18, 28, 8, 815, DateTimeKind.Local), Difficulty = 2 },
+                        new { Id = 3, CaveId = 1, CaverId = 3, Created = new DateTime(2019, 1, 4, 18, 28, 8, 815, DateTimeKind.Local), Difficulty = 1 },
+                        new { Id = 4, CaveId = 2, CaverId = 1, Created = new DateTime(2019, 1, 4, 18, 28, 8, 815, DateTimeKind.Local), Difficulty = 4 },
+                        new { Id = 5, CaveId = 2, CaverId = 3, Created = new DateTime(2019, 1, 4, 18, 28, 8, 815, DateTimeKind.Local), Difficulty = 1 },
+                        new { Id = 6, CaveId = 2, CaverId = 3, Created = new DateTime(2019, 1, 4, 18, 28, 8, 815, DateTimeKind.Local), Difficulty = 2 },
+                        new { Id = 7, CaveId = 3, CaverId = 1, Created = new DateTime(2019, 1, 4, 18, 28, 8, 815, DateTimeKind.Local), Difficulty = 1 },
+                        new { Id = 8, CaveId = 3, CaverId = 2, Created = new DateTime(2019, 1, 4, 18, 28, 8, 815, DateTimeKind.Local), Difficulty = 5 },
+                        new { Id = 9, CaveId = 3, CaverId = 1, Created = new DateTime(2019, 1, 4, 18, 28, 8, 815, DateTimeKind.Local), Difficulty = 1 }
                     );
                 });
 
