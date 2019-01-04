@@ -24,38 +24,15 @@ namespace CaveBase.WebAPI.Repositories
 
         public async Task<List<CaveBasic>> GetAllBasicAsList()
         {
-            //OLD CODE TO MAP
-            //return await database.Caves
-            //               .Select(c => new CaveBasic { Id = c.Id, Name = c.Name, Description = c.Description})
-            //               .ToListAsync();
-
-            //CODE USING AUTOMAPPER
             return await database.Caves.ProjectTo<CaveBasic>(mapper.ConfigurationProvider).ToListAsync();
         }
 
         public async Task<CaveDetail> GetCaveDetailById(int id)
         {
-            return await database.Caves.Select
-                (c => new CaveDetail
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Description = c.Description,
-                    Longitude = c.Longitude,
-                    Latitude = c.Latitude,
-                    Depth = c.Depth,
-                    Length = c.Length,
-                    IsDivingCave = c.IsDivingCave,
-                    HasFormations = c.HasFormations,
-                    Difficulty = c.Difficulty,
-                    ClubId = c.Club.Id,
-                    ClubName = c.Club.Name,
-                    CountryId = c.Country.Id,
-                    CountryName = c.Country.Name,
-                    PhotoName = c.PhotoName
-                }
-                )
-                .FirstOrDefaultAsync(c => c.Id == id);
+            return mapper.Map<CaveDetail>(await database.Caves
+                                                        .Include(c => c.Club)
+                                                        .Include(c => c.Country)
+                                                        .FirstOrDefaultAsync(c => c.Id == id));
         }
     }
 }

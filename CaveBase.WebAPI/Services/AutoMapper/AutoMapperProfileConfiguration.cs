@@ -9,6 +9,7 @@ namespace CaveBase.WebAPI.Services.AutoMapper
         protected AutoMapperProfileConfiguration(string profileName) : base(profileName)
         {
             CreateMap<CaveBasic, Cave>();
+            CreateMap<CaveDetail, Cave>();
         }
 
         public AutoMapperProfileConfiguration() : this("CaveBaseMappingProfile") { }

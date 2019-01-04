@@ -34,6 +34,14 @@ namespace CaveBase.WebAPI.Controllers
             return Ok(await repo.GetAllBasicAsList());
         }
 
+        //GET: api/caves/detailed/{id}
+        [HttpGet]
+        [Route("detailed/{id}")]
+        public async Task<IActionResult> GetCaveDetailedById(int id)
+        {
+            return Ok(await repo.GetCaveDetailById(id));
+        }
+
         // GET: api/caves/imagebyname/{filename}
         [HttpGet]
         [Route("imagebyname/{filename}")]
