@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CaveBase.Library.Models
 {
@@ -25,6 +26,8 @@ namespace CaveBase.Library.Models
         public Country Country { get; set; }
 
         public string PhotoName { get; set; }
+
+        public ICollection<DifficultyRating> Ratings { get; set; }
     }
 
     public enum Difficulty

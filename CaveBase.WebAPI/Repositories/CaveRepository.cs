@@ -27,6 +27,11 @@ namespace CaveBase.WebAPI.Repositories
             return await database.Caves.ProjectTo<CaveBasic>(mapper.ConfigurationProvider).ToListAsync();
         }
 
+        public async Task<List<CaveStats>> GetAllCaveStatsAsList()
+        {
+            return await database.Caves.ProjectTo<CaveStats>(mapper.ConfigurationProvider).ToListAsync();
+        }
+
         public async Task<CaveDetail> GetCaveDetailById(int id)
         {
             return mapper.Map<CaveDetail>(await database.Caves
