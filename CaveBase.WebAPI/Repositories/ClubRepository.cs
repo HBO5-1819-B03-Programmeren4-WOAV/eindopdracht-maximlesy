@@ -1,4 +1,6 @@
-﻿using CaveBase.Library.DTO;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using CaveBase.Library.DTO;
 using CaveBase.Library.Models;
 using CaveBase.WebAPI.Database;
 using CaveBase.WebAPI.Repositories.Generic;
@@ -10,23 +12,13 @@ using System.Threading.Tasks;
 
 namespace CaveBase.WebAPI.Repositories
 {
-    public class ClubRepository : Repository<Club>
+    public class ClubRepository : MappingRepository<Club>
     {
-        public ClubRepository(CaveServiceContext context) : base(context){ }
+        public ClubRepository(CaveServiceContext context, IMapper mapper) : base(context, mapper){ }
 
         public async Task<List<ClubBasic>> ListBasic()
         {
-            var clubs = await database.Clubs.Select
-                (c => new ClubBasic
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Address = $"{c.Streetname} {c.Housenumber}, {c.PostalCode} {c.City}"
-                }
-                )
-                .ToListAsync();
-
-            return clubs;
+            return await database.Clubs.ProjectTo<ClubBasic>(mapper.ConfigurationProvider).ToListAsync();
         }
     }
 }

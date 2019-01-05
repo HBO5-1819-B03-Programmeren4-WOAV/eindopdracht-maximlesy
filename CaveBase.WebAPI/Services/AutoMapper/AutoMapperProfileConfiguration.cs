@@ -8,8 +8,13 @@ namespace CaveBase.WebAPI.Services.AutoMapper
     {
         protected AutoMapperProfileConfiguration(string profileName) : base(profileName)
         {
-            CreateMap<CaveBasic, Cave>();
-            CreateMap<CaveDetail, Cave>();
+            //Without extra configuration
+            CreateMap<Cave, CaveBasic>();
+            CreateMap<Cave, CaveDetail>();
+
+            //With extra configuration 
+            CreateMap<Club, ClubBasic>().ForMember(destinationMember => destinationMember.Address, // The address property of 'ClubBasic'...
+                                                   memberOptions => memberOptions.MapFrom(club => $"{club.Streetname} {club.Housenumber}, {club.PostalCode} {club.City}")); //is equal to this custom(composite) configuration
         }
 
         public AutoMapperProfileConfiguration() : this("CaveBaseMappingProfile") { }
