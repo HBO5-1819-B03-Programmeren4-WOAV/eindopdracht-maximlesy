@@ -16,5 +16,13 @@ namespace CaveBase.WebAPI.Controllers
     {
         //Pass onto generic controller
         public CaversController(CaverRepository repo) : base(repo) { }
+
+        [HttpGet]
+        [Route("basic")]
+        public async Task<IActionResult> GetAllBasic()
+        {
+            return Ok(await repo.GetAllBasicAsList());
+        }
+
     }
 }
