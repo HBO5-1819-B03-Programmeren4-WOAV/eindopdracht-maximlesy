@@ -1,0 +1,19 @@
+﻿@using CaveBase.MVC.ViewModels.Clubs
+@model DetailedClubViewModel
+
+@{
+    ViewData["Title"] = "Detailed Club Overview";
+}
+
+<h1>Detailed Club Overview</h1>
+
+<div class="panel panel-default">
+    <div class="panel-heading">@Model.Club.Name (Cave #@Model.Club.Id)</div>
+    <div class="panel-body">
+        <h2>Contact</h2>
+        <p>@Model.Club.Streetname @Model.Club.Housenumber, @Model.Club.PostalCode @Model.Club.City</p>
+        <p>Member of CaveBase since @Model.Club.Created</p>
+    </div>
+    <div class="panel-footer"><a asp-controller="Clubs" asp-action="Index" class="btn btn-primary">Back to list</a></div>
+</div>
+

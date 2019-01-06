@@ -1,0 +1,21 @@
+﻿@using CaveBase.MVC.ViewModels.Clubs
+@using CaveBase.Library.DTO
+@model IndexViewModel
+
+@{
+    ViewData["Title"] = "Clubs - Overview";
+}
+
+<h1>Clubs - Overview</h1>
+<div class="row">
+    <div class="col-md-4">
+        <ul class="list-group">
+            @foreach (ClubBasic club in Model.Clubs)
+            {
+                <li class="list-group-item @(club.Name)">
+                    <a asp-controller="Clubs" asp-action="Detailed" asp-route-id="@club.Id">@club.Name</a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

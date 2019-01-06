@@ -13,4 +13,13 @@
     <ProjectReference Include="..\CaveBase.Library\CaveBase.Library.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Clubs\Detailed.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Clubs\Index.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
 </Project>
