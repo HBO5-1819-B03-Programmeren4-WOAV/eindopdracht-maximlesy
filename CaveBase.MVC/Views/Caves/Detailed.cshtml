@@ -1,0 +1,32 @@
+﻿@using CaveBase.MVC.ViewModels.Caves
+@model DetailedCaveViewModel
+
+@{
+    ViewData["Title"] = "Detailed Cave Overview";
+}
+
+<h1>Detailed Cave Overview</h1>
+
+<div class="panel panel-default">
+    <div class="panel-heading">@Model.CaveDetail.Name (Cave #@Model.CaveDetail.Id, Difficulty: @Model.CaveDetail.Difficulty.ToString())</div>
+    <div class="panel-body">
+        <h2>Facts:</h2>
+        <ul>
+            <li>Country: @Model.CaveDetail.CountryName</li>
+            <li>Longitude: @Model.CaveDetail.Longitude</li>
+            <li>Latitude: @Model.CaveDetail.Latitude</li>
+            <li>Length: @Model.CaveDetail.Length</li>
+            <li>Depth: @Model.CaveDetail.Depth</li>
+            @Html.Raw((Model.CaveDetail.IsDivingCave == true) ? "<li>Diving cave</li>" : "<li>No diving</li>")
+            @Html.Raw((Model.CaveDetail.HasFormations == true) ? "<li>Formations in cave</li>" : "<li>No formations in cave</li>")
+        </ul>
+        <h2>Description:</h2>
+        <p>@Model.CaveDetail.Description</p>
+        <h2>Photo:</h2>
+        <img width="200" src="https://localhost:5001/api/caves/imagebyname/@Model.CaveDetail.PhotoName" alt="@Model.CaveDetail.PhotoName" />
+        <h2>Contact</h2>
+        <p>This cave is being maintained by @Model.CaveDetail.ClubName. Contact them for information.</p>
+    </div>
+    <div class="panel-footer"><a asp-controller="Caves" asp-action="Index" class="btn btn-primary">Back to list</a></div>
+</div>
+

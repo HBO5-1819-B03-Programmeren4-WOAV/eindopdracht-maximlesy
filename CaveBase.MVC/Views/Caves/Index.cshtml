@@ -1,0 +1,21 @@
+﻿@using CaveBase.MVC.ViewModels.Caves
+@using CaveBase.Library.DTO
+@model IndexViewModel
+
+@{
+    ViewData["Title"] = "Caves - Overview";
+}
+
+<h1>Caves - Overview</h1>
+<div class="row">
+    <div class="col-md-4">
+        <ul class="list-group">
+            @foreach (CaveBasic cave in Model.Caves)
+            {
+                <li class="list-group-item @(cave.Name)">
+                    <a asp-controller="Caves" asp-action="Detailed" asp-route-id="@cave.Id">@cave.Name</a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

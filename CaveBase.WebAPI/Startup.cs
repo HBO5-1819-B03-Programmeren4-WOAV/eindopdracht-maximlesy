@@ -29,6 +29,9 @@ namespace CaveBase.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //CORS
+            services.AddCors();
+            
             //AutoMapper
             var autoMapperConfig = new AutoMapper.MapperConfiguration(config => { config.AddProfile(new AutoMapperProfileConfiguration()); });
             var mapper = autoMapperConfig.CreateMapper();
@@ -60,7 +63,12 @@ namespace CaveBase.WebAPI
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
+
+            app.UseCors(builder => builder.AllowAnyOrigin()
+                                          .AllowAnyHeader()
+                                          .AllowAnyMethod());
+
             app.UseMvc();
         }
     }
