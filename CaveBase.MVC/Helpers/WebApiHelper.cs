@@ -49,9 +49,9 @@ namespace CaveBase.MVC.Helpers
             return await CallApi<ApiDelivery, Receive>(url, entity, HttpMethod.Post);
         }
 
-        public static async Task<ApiDelivery> DeleteCallApi<ApiDelivery, Receive>(string url, Receive entity)
+        public static async Task<ApiDelivery> DeleteCallApi<ApiDelivery>(string url)
         {
-            return await CallApi<ApiDelivery, Receive>(url, entity, HttpMethod.Delete);
+            return await CallApi<ApiDelivery, object>(url, null, HttpMethod.Delete);
         }
     }
 }

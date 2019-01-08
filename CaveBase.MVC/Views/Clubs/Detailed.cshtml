@@ -8,12 +8,64 @@
 <h1>Detailed Club Overview</h1>
 
 <div class="panel panel-default">
-    <div class="panel-heading">@Model.Club.Name (Cave #@Model.Club.Id)</div>
+    @if (ViewBag.Mode == "Detailed")
+    {
     <div class="panel-body">
-        <h2>Contact</h2>
+        <h2>Contact: @Model.Club.Name (#@Model.Club.Id)</h2>
         <p>@Model.Club.Streetname @Model.Club.Housenumber, @Model.Club.PostalCode @Model.Club.City</p>
         <p>Member of CaveBase since @Model.Club.Created</p>
+        <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.Club.Id">Edit</a>
+        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Club.Id">Delete</a>
     </div>
+    }
+
+    @if (ViewBag.Mode == "Edit")
+    {
+        <form asp-action="Save" method="post" class="form-horizontal">
+            <div class="form-group">
+                <label for="Id" class="col-sm-2 control-label">Id</label>
+                <div class="col-sm-10">
+                    <input asp-for="Club.Id" class="form-control" readonly="readonly">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="Name" class="col-sm-2 control-label">Name</label>
+                <div class="col-sm-10">
+                    <input asp-for="Club.Name" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="Streetname" class="col-sm-2 control-label">Street</label>
+                <div class="col-sm-10">
+                    <input asp-for="Club.Streetname" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="Housenumber" class="col-sm-2 control-label">House number</label>
+                <div class="col-sm-10">
+                    <input asp-for="Club.Housenumber" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="City" class="col-sm-2 control-label">City</label>
+                <div class="col-sm-10">
+                    <input asp-for="Club.City" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="PostalCode" class="col-sm-2 control-label">Postal code</label>
+                <div class="col-sm-10">
+                    <input asp-for="Club.PostalCode" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </div>
+        </form>
+    }
+
     <div class="panel-footer"><a asp-controller="Clubs" asp-action="Index" class="btn btn-primary">Back to list</a></div>
 </div>
 
