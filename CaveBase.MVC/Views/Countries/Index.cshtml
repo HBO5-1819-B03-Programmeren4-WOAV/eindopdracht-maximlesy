@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Countries - Overview";
+}
+
+<article id="app" class="row">
+    <h1>{{ message }}</h1>
+    <header class="col-md-4">
+        <nav>
+            <ul class="list-group">
+                <li :class="getCountryClass(country)" 
+                    v-for="country in countries"
+                    v-on:click="fetchCountryDetails(country)"
+                    style="cursor:pointer">
+                    <span class="countryName">{{ country.name }}</span>
+                </li>
+            </ul>
+        </nav>
+    </header>
+</article>
+
+@section scripts{ 
+    <script src="~/js/vue.js"></script>
+    <script>
+
+        var url = "https://localhost:44334/api/countries";
+
+        var app = new Vue({
+
+            el: "#app",
+
+            data: {
+                message: "Loading books ...",
+                countries: null
+            },
+
+            created: function () {
+                var self = this;
+                self.fetchCountries();
+            },
+
+            methods: {
+
+                fetchCountries: function () {
+                    self = this;
+                    fetch(url)
+                        .then(result => result.json())
+                        .then(function (countries) {
+                            countries.forEach(function (country, i) { country.isActive = false; });
+                            self.countries = countries;
+                            self.message = "Countries - overview";
+                        }).catch(error => console.error("Something went wrong while getting the countries: " + error));
+                },
+
+                fetchCountryDetails: function (country) {
+                    self = this;
+                    self.countries.forEach(function (otherCountry, i) { otherCountry.isActive = false; });
+                    country.isActive = true;
+                },
+
+                getCountryClass: function (country) {
+                    if (country.isActive) return "list-group-item active";
+                    return "list-group-item";
+                }
+            }
+        });
+
+    </script>
+}

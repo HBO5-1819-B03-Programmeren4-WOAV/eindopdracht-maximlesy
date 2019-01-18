@@ -62,9 +62,9 @@ namespace CaveBase.WebAPI.Migrations
                     b.ToTable("Caves");
 
                     b.HasData(
-                        new { Id = 1, ClubId = 1, CountryId = 1, Created = new DateTime(2019, 1, 9, 20, 42, 30, 913, DateTimeKind.Local), Depth = 100, Description = "Awesome cave!", Difficulty = 4, HasFormations = true, IsDivingCave = true, Latitude = 30.343432, Length = 123, Longitude = 3.238184, Name = "Fosse Sin Sin", PhotoName = "caveimg1.jpg" },
-                        new { Id = 2, ClubId = 1, CountryId = 1, Created = new DateTime(2019, 1, 9, 20, 42, 30, 913, DateTimeKind.Local), Depth = 130, Description = "Bears!", Difficulty = 1, HasFormations = false, IsDivingCave = false, Latitude = 33.433488, Length = 123, Longitude = 8.5941, Name = "Fosse Aux Ours", PhotoName = "caveimg2.jpg" },
-                        new { Id = 3, ClubId = 2, CountryId = 1, Created = new DateTime(2019, 1, 9, 20, 42, 30, 913, DateTimeKind.Local), Depth = 4130, Description = "Big cave!", Difficulty = 3, HasFormations = true, IsDivingCave = false, Latitude = 1.777777, Length = 1623, Longitude = 2.777777, Name = "Grottes de Han", PhotoName = "caveimg3.jpg" }
+                        new { Id = 1, ClubId = 1, CountryId = 1, Created = new DateTime(2019, 1, 18, 15, 33, 55, 775, DateTimeKind.Local), Depth = 100, Description = "Awesome cave!", Difficulty = 4, HasFormations = true, IsDivingCave = true, Latitude = 30.343432, Length = 123, Longitude = 3.238184, Name = "Fosse Sin Sin", PhotoName = "caveimg1.jpg" },
+                        new { Id = 2, ClubId = 1, CountryId = 1, Created = new DateTime(2019, 1, 18, 15, 33, 55, 775, DateTimeKind.Local), Depth = 130, Description = "Bears!", Difficulty = 1, HasFormations = false, IsDivingCave = false, Latitude = 33.433488, Length = 123, Longitude = 8.5941, Name = "Fosse Aux Ours", PhotoName = "caveimg2.jpg" },
+                        new { Id = 3, ClubId = 2, CountryId = 1, Created = new DateTime(2019, 1, 18, 15, 33, 55, 775, DateTimeKind.Local), Depth = 4130, Description = "Big cave!", Difficulty = 3, HasFormations = true, IsDivingCave = false, Latitude = 1.777777, Length = 1623, Longitude = 2.777777, Name = "Grottes de Han", PhotoName = "caveimg3.jpg" }
                     );
                 });
 
@@ -87,9 +87,9 @@ namespace CaveBase.WebAPI.Migrations
                     b.ToTable("Cavers");
 
                     b.HasData(
-                        new { Id = 1, Created = new DateTime(2019, 1, 9, 20, 42, 31, 213, DateTimeKind.Local), FirstName = "Maxim", LastName = "Lesy" },
-                        new { Id = 2, Created = new DateTime(2019, 1, 9, 20, 42, 31, 213, DateTimeKind.Local), FirstName = "Evi", LastName = "De Baets" },
-                        new { Id = 3, Created = new DateTime(2019, 1, 9, 20, 42, 31, 213, DateTimeKind.Local), FirstName = "Charlotte", LastName = "Janssens" }
+                        new { Id = 1, Created = new DateTime(2019, 1, 18, 15, 33, 56, 75, DateTimeKind.Local), FirstName = "Maxim", LastName = "Lesy" },
+                        new { Id = 2, Created = new DateTime(2019, 1, 18, 15, 33, 56, 75, DateTimeKind.Local), FirstName = "Evi", LastName = "De Baets" },
+                        new { Id = 3, Created = new DateTime(2019, 1, 18, 15, 33, 56, 75, DateTimeKind.Local), FirstName = "Charlotte", LastName = "Janssens" }
                     );
                 });
 
@@ -118,8 +118,8 @@ namespace CaveBase.WebAPI.Migrations
                     b.ToTable("Clubs");
 
                     b.HasData(
-                        new { Id = 1, City = "Oostende", Created = new DateTime(2019, 1, 9, 20, 42, 30, 910, DateTimeKind.Local), Housenumber = 22, Name = "Speleo Cascade", PostalCode = 8250, Streetname = "Koebrugstraat" },
-                        new { Id = 2, City = "Brugge", Created = new DateTime(2019, 1, 9, 20, 42, 30, 912, DateTimeKind.Local), Housenumber = 33, Name = "Speleo IVO", PostalCode = 8000, Streetname = "Nijverheidslaan" }
+                        new { Id = 1, City = "Oostende", Created = new DateTime(2019, 1, 18, 15, 33, 55, 773, DateTimeKind.Local), Housenumber = 22, Name = "Speleo Cascade", PostalCode = 8250, Streetname = "Koebrugstraat" },
+                        new { Id = 2, City = "Brugge", Created = new DateTime(2019, 1, 18, 15, 33, 55, 775, DateTimeKind.Local), Housenumber = 33, Name = "Speleo IVO", PostalCode = 8000, Streetname = "Nijverheidslaan" }
                     );
                 });
 
@@ -142,7 +142,9 @@ namespace CaveBase.WebAPI.Migrations
                     b.ToTable("Countries");
 
                     b.HasData(
-                        new { Id = 1, Created = new DateTime(2019, 1, 9, 20, 42, 30, 912, DateTimeKind.Local), Name = "Belgium", ShortName = "BE" }
+                        new { Id = 1, Created = new DateTime(2019, 1, 18, 15, 33, 55, 775, DateTimeKind.Local), Name = "Belgium", ShortName = "BE" },
+                        new { Id = 2, Created = new DateTime(2019, 1, 18, 15, 33, 55, 775, DateTimeKind.Local), Name = "France", ShortName = "FR" },
+                        new { Id = 3, Created = new DateTime(2019, 1, 18, 15, 33, 55, 775, DateTimeKind.Local), Name = "Slovenia", ShortName = "SI" }
                     );
                 });
 
@@ -171,15 +173,15 @@ namespace CaveBase.WebAPI.Migrations
                     b.ToTable("DifficultyRatings");
 
                     b.HasData(
-                        new { Id = 1, CaveId = 1, CaverId = 1, Created = new DateTime(2019, 1, 9, 20, 42, 31, 214, DateTimeKind.Local), Difficulty = 5 },
-                        new { Id = 2, CaveId = 1, CaverId = 2, Created = new DateTime(2019, 1, 9, 20, 42, 31, 214, DateTimeKind.Local), Difficulty = 2 },
-                        new { Id = 3, CaveId = 1, CaverId = 3, Created = new DateTime(2019, 1, 9, 20, 42, 31, 214, DateTimeKind.Local), Difficulty = 1 },
-                        new { Id = 4, CaveId = 2, CaverId = 1, Created = new DateTime(2019, 1, 9, 20, 42, 31, 214, DateTimeKind.Local), Difficulty = 4 },
-                        new { Id = 5, CaveId = 2, CaverId = 3, Created = new DateTime(2019, 1, 9, 20, 42, 31, 214, DateTimeKind.Local), Difficulty = 1 },
-                        new { Id = 6, CaveId = 2, CaverId = 3, Created = new DateTime(2019, 1, 9, 20, 42, 31, 214, DateTimeKind.Local), Difficulty = 2 },
-                        new { Id = 7, CaveId = 3, CaverId = 1, Created = new DateTime(2019, 1, 9, 20, 42, 31, 214, DateTimeKind.Local), Difficulty = 1 },
-                        new { Id = 8, CaveId = 3, CaverId = 2, Created = new DateTime(2019, 1, 9, 20, 42, 31, 214, DateTimeKind.Local), Difficulty = 5 },
-                        new { Id = 9, CaveId = 3, CaverId = 1, Created = new DateTime(2019, 1, 9, 20, 42, 31, 214, DateTimeKind.Local), Difficulty = 1 }
+                        new { Id = 1, CaveId = 1, CaverId = 1, Created = new DateTime(2019, 1, 18, 15, 33, 56, 76, DateTimeKind.Local), Difficulty = 5 },
+                        new { Id = 2, CaveId = 1, CaverId = 2, Created = new DateTime(2019, 1, 18, 15, 33, 56, 76, DateTimeKind.Local), Difficulty = 2 },
+                        new { Id = 3, CaveId = 1, CaverId = 3, Created = new DateTime(2019, 1, 18, 15, 33, 56, 76, DateTimeKind.Local), Difficulty = 1 },
+                        new { Id = 4, CaveId = 2, CaverId = 1, Created = new DateTime(2019, 1, 18, 15, 33, 56, 76, DateTimeKind.Local), Difficulty = 4 },
+                        new { Id = 5, CaveId = 2, CaverId = 3, Created = new DateTime(2019, 1, 18, 15, 33, 56, 76, DateTimeKind.Local), Difficulty = 1 },
+                        new { Id = 6, CaveId = 2, CaverId = 3, Created = new DateTime(2019, 1, 18, 15, 33, 56, 76, DateTimeKind.Local), Difficulty = 2 },
+                        new { Id = 7, CaveId = 3, CaverId = 1, Created = new DateTime(2019, 1, 18, 15, 33, 56, 76, DateTimeKind.Local), Difficulty = 1 },
+                        new { Id = 8, CaveId = 3, CaverId = 2, Created = new DateTime(2019, 1, 18, 15, 33, 56, 76, DateTimeKind.Local), Difficulty = 5 },
+                        new { Id = 9, CaveId = 3, CaverId = 1, Created = new DateTime(2019, 1, 18, 15, 33, 56, 76, DateTimeKind.Local), Difficulty = 1 }
                     );
                 });
 

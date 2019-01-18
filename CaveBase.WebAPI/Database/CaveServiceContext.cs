@@ -65,11 +65,25 @@ namespace CaveBase.WebAPI.Database
             modelbuilder.Entity<Country>()
                         .ToTable("Countries")
                         .HasData(
-                        new {
+                        new Country {
                             Id = 1,
                             Created = DateTime.Now,
                             Name = "Belgium",
                             ShortName = "BE"
+                        },
+                        new Country
+                        {
+                            Id = 2,
+                            Created = DateTime.Now,
+                            Name = "France",
+                            ShortName = "FR"
+                        },
+                        new Country
+                        {
+                            Id = 3,
+                            Created = DateTime.Now,
+                            Name = "Slovenia",
+                            ShortName = "SI"
                         }
                         );
 

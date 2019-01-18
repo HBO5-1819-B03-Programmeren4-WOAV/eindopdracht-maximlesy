@@ -28,6 +28,17 @@ body {
     margin: 15px;
 }
 
+.countryTitle {
+    color: darkblue;
+    font-size: small;
+}
+
+.countryName{
+    color: darkred;
+    font-style: italic;
+    font-size: small;
+}
+
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
     /* Hide captions */
