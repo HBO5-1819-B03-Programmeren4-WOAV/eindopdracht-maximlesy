@@ -7,6 +7,6 @@ namespace CaveBase.MVC.Constants
 {
     public static class CaveApi
     {
-        public const string BaseUrl = "https://localhost:5001/api";
+        public const string BaseUrl = "https://localhost:44334/api";
     }
 }

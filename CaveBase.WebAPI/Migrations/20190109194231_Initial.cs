@@ -126,9 +126,9 @@ namespace CaveBase.WebAPI.Migrations
                 columns: new[] { "Id", "Created", "FirstName", "LastName" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2019, 1, 4, 18, 28, 8, 697, DateTimeKind.Local), "Maxim", "Lesy" },
-                    { 2, new DateTime(2019, 1, 4, 18, 28, 8, 697, DateTimeKind.Local), "Evi", "De Baets" },
-                    { 3, new DateTime(2019, 1, 4, 18, 28, 8, 697, DateTimeKind.Local), "Charlotte", "Janssens" }
+                    { 1, new DateTime(2019, 1, 9, 20, 42, 31, 93, DateTimeKind.Local), "Maxim", "Lesy" },
+                    { 2, new DateTime(2019, 1, 9, 20, 42, 31, 93, DateTimeKind.Local), "Evi", "De Baets" },
+                    { 3, new DateTime(2019, 1, 9, 20, 42, 31, 93, DateTimeKind.Local), "Charlotte", "Janssens" }
                 });
 
             migrationBuilder.InsertData(
@@ -136,44 +136,44 @@ namespace CaveBase.WebAPI.Migrations
                 columns: new[] { "Id", "City", "Created", "Housenumber", "Name", "PostalCode", "Streetname" },
                 values: new object[,]
                 {
-                    { 1, "Oostende", new DateTime(2019, 1, 4, 18, 28, 8, 532, DateTimeKind.Local), 22, "Speleo Cascade", 8250, "Koebrugstraat" },
-                    { 2, "Brugge", new DateTime(2019, 1, 4, 18, 28, 8, 534, DateTimeKind.Local), 33, "Speleo IVO", 8000, "Nijverheidslaan" }
+                    { 1, "Oostende", new DateTime(2019, 1, 9, 20, 42, 30, 910, DateTimeKind.Local), 22, "Speleo Cascade", 8250, "Koebrugstraat" },
+                    { 2, "Brugge", new DateTime(2019, 1, 9, 20, 42, 30, 912, DateTimeKind.Local), 33, "Speleo IVO", 8000, "Nijverheidslaan" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Countries",
                 columns: new[] { "Id", "Created", "Name", "ShortName" },
-                values: new object[] { 1, new DateTime(2019, 1, 4, 18, 28, 8, 534, DateTimeKind.Local), "Belgium", "BE" });
+                values: new object[] { 1, new DateTime(2019, 1, 9, 20, 42, 30, 912, DateTimeKind.Local), "Belgium", "BE" });
 
             migrationBuilder.InsertData(
                 table: "Caves",
                 columns: new[] { "Id", "ClubId", "CountryId", "Created", "Depth", "Description", "Difficulty", "HasFormations", "IsDivingCave", "Latitude", "Length", "Longitude", "Name", "PhotoName" },
-                values: new object[] { 1, 1, 1, new DateTime(2019, 1, 4, 18, 28, 8, 535, DateTimeKind.Local), 100, "Awesome cave!", 4, true, true, 30.343432, 123, 3.238184, "Fosse Sin Sin", "caveimg1.jpg" });
+                values: new object[] { 1, 1, 1, new DateTime(2019, 1, 9, 20, 42, 30, 913, DateTimeKind.Local), 100, "Awesome cave!", 4, true, true, 30.343432, 123, 3.238184, "Fosse Sin Sin", "caveimg1.jpg" });
 
             migrationBuilder.InsertData(
                 table: "Caves",
                 columns: new[] { "Id", "ClubId", "CountryId", "Created", "Depth", "Description", "Difficulty", "HasFormations", "IsDivingCave", "Latitude", "Length", "Longitude", "Name", "PhotoName" },
-                values: new object[] { 2, 1, 1, new DateTime(2019, 1, 4, 18, 28, 8, 535, DateTimeKind.Local), 130, "Bears!", 1, false, false, 33.433488, 123, 8.5941, "Fosse Aux Ours", "caveimg2.jpg" });
+                values: new object[] { 2, 1, 1, new DateTime(2019, 1, 9, 20, 42, 30, 913, DateTimeKind.Local), 130, "Bears!", 1, false, false, 33.433488, 123, 8.5941, "Fosse Aux Ours", "caveimg2.jpg" });
 
             migrationBuilder.InsertData(
                 table: "Caves",
                 columns: new[] { "Id", "ClubId", "CountryId", "Created", "Depth", "Description", "Difficulty", "HasFormations", "IsDivingCave", "Latitude", "Length", "Longitude", "Name", "PhotoName" },
-                values: new object[] { 3, 2, 1, new DateTime(2019, 1, 4, 18, 28, 8, 535, DateTimeKind.Local), 4130, "Big cave!", 3, true, false, 1.777777, 1623, 2.777777, "Grottes de Han", "caveimg3.jpg" });
+                values: new object[] { 3, 2, 1, new DateTime(2019, 1, 9, 20, 42, 30, 913, DateTimeKind.Local), 4130, "Big cave!", 3, true, false, 1.777777, 1623, 2.777777, "Grottes de Han", "caveimg3.jpg" });
 
             migrationBuilder.InsertData(
                 table: "DifficultyRatings",
                 columns: new[] { "Id", "CaveId", "CaverId", "Created", "Difficulty" },
                 values: new object[,]
                 {
-                    { 1, 1, 1, new DateTime(2019, 1, 4, 18, 28, 8, 713, DateTimeKind.Local), 5 },
-                    { 2, 1, 2, new DateTime(2019, 1, 4, 18, 28, 8, 714, DateTimeKind.Local), 2 },
-                    { 3, 1, 3, new DateTime(2019, 1, 4, 18, 28, 8, 714, DateTimeKind.Local), 1 },
-                    { 4, 2, 1, new DateTime(2019, 1, 4, 18, 28, 8, 714, DateTimeKind.Local), 4 },
-                    { 5, 2, 3, new DateTime(2019, 1, 4, 18, 28, 8, 714, DateTimeKind.Local), 1 },
-                    { 6, 2, 3, new DateTime(2019, 1, 4, 18, 28, 8, 714, DateTimeKind.Local), 2 },
-                    { 7, 3, 1, new DateTime(2019, 1, 4, 18, 28, 8, 714, DateTimeKind.Local), 1 },
-                    { 8, 3, 2, new DateTime(2019, 1, 4, 18, 28, 8, 714, DateTimeKind.Local), 5 },
-                    { 9, 3, 1, new DateTime(2019, 1, 4, 18, 28, 8, 714, DateTimeKind.Local), 1 }
+                    { 1, 1, 1, new DateTime(2019, 1, 9, 20, 42, 31, 107, DateTimeKind.Local), 5 },
+                    { 2, 1, 2, new DateTime(2019, 1, 9, 20, 42, 31, 107, DateTimeKind.Local), 2 },
+                    { 3, 1, 3, new DateTime(2019, 1, 9, 20, 42, 31, 107, DateTimeKind.Local), 1 },
+                    { 4, 2, 1, new DateTime(2019, 1, 9, 20, 42, 31, 107, DateTimeKind.Local), 4 },
+                    { 5, 2, 3, new DateTime(2019, 1, 9, 20, 42, 31, 107, DateTimeKind.Local), 1 },
+                    { 6, 2, 3, new DateTime(2019, 1, 9, 20, 42, 31, 107, DateTimeKind.Local), 2 },
+                    { 7, 3, 1, new DateTime(2019, 1, 9, 20, 42, 31, 107, DateTimeKind.Local), 1 },
+                    { 8, 3, 2, new DateTime(2019, 1, 9, 20, 42, 31, 107, DateTimeKind.Local), 5 },
+                    { 9, 3, 1, new DateTime(2019, 1, 9, 20, 42, 31, 108, DateTimeKind.Local), 1 }
                 });
 
             migrationBuilder.CreateIndex(

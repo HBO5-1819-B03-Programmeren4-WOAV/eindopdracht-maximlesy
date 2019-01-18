@@ -1,0 +1,64 @@
+﻿@using CaveBase.MVC.ViewModels.Cavers
+@using CaveBase.Library.DTO;
+@model IndexViewModel
+@{
+    ViewData["Title"] = "Cavers";
+}
+
+<h2>Cavers - overview</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <ul class="list-group">
+            @foreach (CaverBasic caver in Model.Cavers)
+            {
+                <li class="list-group-item"><a class="caver" href="#" data-id="@caver.Id">@caver.FullName</a></li>
+            }
+        </ul>
+    </div>
+</div>
+
+<div class="modal fade" id="caverModal" tabindex="-1" role="dialog" aria-labelledby="caverModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">x</span>
+                </button>
+                <h2 class="modal-title" id="caverModalLabel">Caver details</h2>
+            </div>
+            <div class="modal-body">Details</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{ 
+<script>
+    $(document).ready(function () {
+        var url = "https://localhost:44334/api/cavers/basic";
+
+        var caverModal = $("#caverModal");
+        $(".caver").on("click", function () {
+            fetch(url + '/' + $(this).data("id"))
+                .then(response => response.json())
+                .then(function (caver) { showCaverDetails(caver); });
+        });
+
+        showCaverDetails = function (caver) {
+            //TO DO: there are more efficient ways of adding tags (instead of building string like this)
+            var content = "<p>Name: " + caver.fullName + "</p>";
+            content += "<p>Unique id: " + caver.id + "</p>";
+
+            //find the modal-body div of the modal (caverModal) and put html content in it
+            caverModal.find(".modal-body").html(content);
+
+            //make modal appear
+            caverModal.modal("show");
+        };
+    });
+</script>
+}

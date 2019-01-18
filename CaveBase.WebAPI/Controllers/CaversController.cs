@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using CaveBase.Library.DTO;
 using CaveBase.Library.Models;
 using CaveBase.WebAPI.Controllers.Generic;
 using CaveBase.WebAPI.Repositories;
@@ -18,6 +19,13 @@ namespace CaveBase.WebAPI.Controllers
         public async Task<IActionResult> GetAllBasic()
         {
             return Ok(await repo.GetAllBasicAsList());
+        }
+
+        [HttpGet]
+        [Route("basic/{id}")]
+        public async Task<IActionResult> GetBasic(int id)
+        {
+            return Ok(await repo.GetBasicCaver(id));
         }
 
     }

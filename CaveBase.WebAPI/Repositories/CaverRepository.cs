@@ -18,5 +18,10 @@ namespace CaveBase.WebAPI.Repositories
         {
             return await database.Cavers.ProjectTo<CaverBasic>(mapper.ConfigurationProvider).ToListAsync();
         }
+
+        public async Task<CaverBasic> GetBasicCaver(int id)
+        {
+            return mapper.Map<CaverBasic>(await database.Cavers.FirstOrDefaultAsync(caver => caver.Id == id));
+        }
     }
 }
