@@ -16,6 +16,28 @@
             </ul>
         </nav>
     </header>
+    <div v-if="currentCountry" class="col-md-8">
+        <h3>Details</h3>
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-2 control-label small">CountryName</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="currentCountry.name" :readonly="isReadOnly" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label small">CountryName</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="currentCountry.shortName" :readonly="isReadOnly" />
+                </div>
+            </div>
+            <button class="btn btn-primary" v-if="!isReadOnly" v-on:click="save">Save</button>
+            <button class="btn btn-default" v-if="!isReadOnly" v-on:click="cancel">Cancel</button>
+            <button class="btn btn-primary" v-if="isReadOnly" v-on:click="toEditMode(true)">Edit</button>
+            <button class="btn btn-warning" v-if="isReadOnly" v-on:click="toEditMode(false)">New</button>
+            <button class="btn btn-danger" v-if="isReadOnly" v-on:click="deleteCountry()">Delete</button>
+        </div>
+    </div>
 </article>
 
 @section scripts{ 
@@ -29,8 +51,11 @@
             el: "#app",
 
             data: {
-                message: "Loading books ...",
-                countries: null
+                message: "Loading countries ...",
+                countries: null,
+                currentCountry: null,
+                isReadOnly: true,
+                isEdit: false
             },
 
             created: function () {
@@ -48,18 +73,109 @@
                             countries.forEach(function (country, i) { country.isActive = false; });
                             self.countries = countries;
                             self.message = "Countries - overview";
+                            if (self.countries.length > 0) { self.fetchCountryDetails(self.countries[0]); }
                         }).catch(error => console.error("Something went wrong while getting the countries: " + error));
                 },
 
                 fetchCountryDetails: function (country) {
                     self = this;
-                    self.countries.forEach(function (otherCountry, i) { otherCountry.isActive = false; });
-                    country.isActive = true;
+                    if (!self.isReadOnly) return;
+                    fetch(`${url}/${country.id}`)
+                        .then(result => result.json())
+                        .then(function (result) {
+                            self.currentCountry = result;
+                            self.setActiveCountry(country.id);
+                        });
+                },
+
+                setActiveCountry: function (countryid) {
+                    self.countries.forEach(function (country, i) { country.isActive = country.id === countryid ? true : false; });
                 },
 
                 getCountryClass: function (country) {
                     if (country.isActive) return "list-group-item active";
                     return "list-group-item";
+                },
+
+                toEditMode: function (isEdit) {
+                    self = this;
+                    self.isReadOnly = false;
+                    self.isEdit = isEdit;
+                    if (!isEdit) {
+                        self.currentCountry = {
+                            "name": "",
+                            "shortName": "",
+                            "id": 0,
+                            "created": ""
+                        };
+                    }
+                },
+
+                save: function () {
+                    self = this; //
+                    var ajaxHeaders = new Headers();
+                    ajaxHeaders.append("Content-Type", "application/json");
+                    var ajaxConfig = {
+                        method: "PUT",
+                        body: JSON.stringify(self.currentCountry),
+                        headers: ajaxHeaders
+                    };
+
+                    if (self.isEdit) {
+                        let putCountryRequest = new Request(`${url}/${self.currentCountry.id}`, ajaxConfig);
+                        fetch(putCountryRequest)
+                            .then(result => result.json())
+                            .then(result => {
+                                self.updateList(result);
+                            }).catch(error => console.error("Someting went wrong during with the put request: " + error));
+                    }
+                    else {
+                        ajaxConfig.method = "POST";
+                        let postCountryRequest = new Request(`${url}`, ajaxConfig);
+                        fetch(postCountryRequest)
+                            .then(result => result.json())
+                            .then(result => {
+                                self.addToList(result);
+                            }).catch(error => console.error("Someting went wrong during with the post request: " + error));
+                    }
+
+                    self.isEdit = false;
+                    self.isReadOnly = true;
+                },
+
+                addToList: function (country) {
+                    self.currentCountry.id = country.id;
+                    self.countries.push(country);
+                    self.fetchCountryDetails(self.countries[self.countries.length - 1]);
+                },
+
+                updateList: function (country) {
+                    var updatedCountry = self.countries.filter(c => c.id === country.id)[0];
+                    updatedCountry.name = country.name;
+                },
+
+                cancel: function (country) {
+                    self = this;//
+                    self.isReadOnly = true;
+                    self.isEdit = false;
+
+                    if (self.isEdit) { self.fetchCountryDetails(self.currentCountry); }
+                    else { self.fetchCountryDetails(self.countries[0]); }
+                },
+
+                deleteCountry: function () {
+                    self = this;
+                    fetch(`${url}/${self.currentCountry.id}`, { method: "DELETE" })
+                        .then(result => result.json())
+                        .then(function(result){
+                            self.countries.forEach(function (country, i) {
+                                if (country.id === self.currentCountry.id) {
+                                    self.countries.splice(i, 1);
+                                    return;
+                                }
+                            });
+                            if (self.countries.length > 0) { self.fetchCountryDetails(self.countries[0]); }
+                        }).catch(error => console.error("Someting went wrong during with the delete request: " + error));
                 }
             }
         });
