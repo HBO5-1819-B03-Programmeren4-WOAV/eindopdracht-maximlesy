@@ -39,6 +39,13 @@ body {
     font-size: small;
 }
 
+.updateMessage {
+    padding: 20px;
+    margin-bottom: 2px;
+    background-color: #3f68e0;
+    color: white;
+}
+
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
     /* Hide captions */
