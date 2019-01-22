@@ -74,7 +74,7 @@
 
                 sendOverSignalR: function () {
                     self = this;
-                    let updateMessage = " - has been updated.";
+                    let updateMessage = `Cave (#${self.currentCountry.id}) has been updated.`;
                     self.connection.invoke("UpdateCountry", self.currentCountry, self.originalCountry, updateMessage).catch(function (err) { return console.error(err.toString()); });
                     self.updateOriginalCountry();
                 },

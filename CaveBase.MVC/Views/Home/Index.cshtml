@@ -34,21 +34,19 @@
                     self.connection.on("ReceiveUpdateCountry", function (country, oldcountry, message) {
                         //created li element with correct class
                         var div = document.createElement("div");
-                        var br = document.createElement("br");
                         var pNew = document.createElement("p");
                         var pOld = document.createElement("p");
                         var updateMessage = document.createElement("p");
                         div.className = "updateMessage";
 
                         //add info about the old country, a br and the new info; received from signal R
-                        updateMessage.innerText = `Cave${message}`;
+                        updateMessage.innerText = message;
                         pNew.innerText = `INTO: ${country.name} (${country.shortName})`;
                         pOld.innerText += `FROM: ${oldcountry.name} (${oldcountry.shortName})`;
 
                         //wrap in div
                         div.appendChild(updateMessage);
                         div.appendChild(pOld);
-                        div.appendChild(br);
                         div.appendChild(pNew);
 
                         //add to messageList
