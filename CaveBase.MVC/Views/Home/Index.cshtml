@@ -33,14 +33,27 @@
 
                     self.connection.on("ReceiveUpdateCountry", function (country, oldcountry, message) {
                         //created li element with correct class
-                        var p = document.createElement("p");
-                        p.className = "updateMessage";
+                        var div = document.createElement("div");
+                        var br = document.createElement("br");
+                        var pNew = document.createElement("p");
+                        var pOld = document.createElement("p");
+                        var updateMessage = document.createElement("p");
+                        div.className = "updateMessage";
 
                         //add info about the old country, a br and the new info; received from signal R
-                        p.innerHTML = `${country.name} (${country.shortName}) ${message}<br>`;
-                        p.innerHTML += `${oldcountry.name} (${oldcountry.shortName}) - old values.`;
+                        updateMessage.innerText = `Cave${message}`;
+                        pNew.innerText = `INTO: ${country.name} (${country.shortName})`;
+                        pOld.innerText += `FROM: ${oldcountry.name} (${oldcountry.shortName})`;
 
-                        document.getElementById("messageList").appendChild(p);
+                        //wrap in div
+                        div.appendChild(updateMessage);
+                        div.appendChild(pOld);
+                        div.appendChild(br);
+                        div.appendChild(pNew);
+
+                        //add to messageList
+                        var messageList = document.getElementById("messageList");
+                        messageList.insertBefore(div, messageList.childNodes[0]);
                     });
 
                     self.connection.start().catch(function (err) {

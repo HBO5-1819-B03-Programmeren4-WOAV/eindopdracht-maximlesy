@@ -50,7 +50,6 @@
     <script>
 
         var url = "https://localhost:44334/api/countries";
-        var originalCountry = null;
         var app = new Vue({
 
             el: "#app",
@@ -59,6 +58,7 @@
                 message: "Loading countries ...",
                 countries: null,
                 currentCountry: null,
+                originalCountry: null,
                 isReadOnly: true,
                 isEdit: false,
                 connection: null
@@ -74,12 +74,9 @@
 
                 sendOverSignalR: function () {
                     self = this;
-                    let countryName = document.getElementById("countryName").value;
-                    let shortName = document.getElementById("shortName").value;
-                    let currentId = self.currentCountry.id;
                     let updateMessage = " - has been updated.";
-                    var country = { name: countryName, shortName: shortName, id: currentId };
-                    self.connection.invoke("UpdateCountry", country, originalCountry, updateMessage).catch(function (err) { return console.error(err.toString()); });
+                    self.connection.invoke("UpdateCountry", self.currentCountry, self.originalCountry, updateMessage).catch(function (err) { return console.error(err.toString()); });
+                    self.updateOriginalCountry();
                 },
 
                 fetchCountries: function () {
@@ -100,14 +97,20 @@
                     if (!self.isReadOnly) return;
                     fetch(`${url}/${country.id}`)
                         .then(result => result.json())
-                        .then(function (result) {
-                            //store a new cave object outside of the scope of Vue so we can reference back to the old values
-                            //when we send the updated object over via SignalR.
-                            originalCountry = { name: result.name, id: result.id, created: result.created, shortName: result.shortName };
-
+                        .then(function (result) {                          
                             self.currentCountry = result;
                             self.setActiveCountry(country.id);
+                            self.updateOriginalCountry();
                         });
+                },
+
+                updateOriginalCountry: function () {
+                    self.originalCountry = {
+                        name: self.currentCountry.name,
+                        id: self.currentCountry.id,
+                        created: self.currentCountry.created,
+                        shortName: self.currentCountry.shortName
+                    };
                 },
 
                 setActiveCountry: function (countryid) {
