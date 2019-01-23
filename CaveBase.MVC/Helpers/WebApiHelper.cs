@@ -10,6 +10,7 @@ namespace CaveBase.MVC.Helpers
     public static class WebApiHelper
     {
         public const string baseUrl = "https://localhost:5001/api/caves";
+        public const string apiUrl = "https://localhost:44334/api/";
 
         public static T GetApiResult<T>(string url)
         {

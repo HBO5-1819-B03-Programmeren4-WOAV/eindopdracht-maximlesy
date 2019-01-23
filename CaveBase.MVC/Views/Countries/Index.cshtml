@@ -1,4 +1,7 @@
-﻿@{
+﻿@using CaveBase.MVC.ViewModels.Countries
+@model IndexViewModel
+
+@{
     ViewData["Title"] = "Countries - Overview";
 }
 
@@ -49,7 +52,7 @@
     <script src="~/lib/signalr/dist/browser/signalr.js"></script>
     <script>
 
-        var url = "https://localhost:44334/api/countries";
+        var url = "@(Model.BaseUrl)countries";
         var app = new Vue({
 
             el: "#app",
