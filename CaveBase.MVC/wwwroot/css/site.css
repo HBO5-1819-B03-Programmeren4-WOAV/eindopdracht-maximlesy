@@ -33,17 +33,29 @@ body {
     font-size: small;
 }
 
-.countryName{
-    color: darkred;
-    font-style: italic;
-    font-size: small;
-}
-
 .updateMessage {
     padding: 20px;
     margin-bottom: 2px;
     background-color: #3f68e0;
     color: white;
+}
+
+.buttons {
+    display: inline-block;
+    float: right;
+}
+
+.buttons > span {
+    font-size: 1.25em;
+    padding: 3px 3px 3px 3px;
+}
+
+.purple {
+    color: #323763;
+}
+
+.red{
+    color: indianred;
 }
 
 /* Hide/rearrange for smaller screens */

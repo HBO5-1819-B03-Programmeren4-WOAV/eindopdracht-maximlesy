@@ -1,0 +1,244 @@
+﻿@using CaveBase.MVC.ViewModels.Clubs
+@model IndexVueViewModel
+<article id="app" class="row">
+    <h1>{{ message }}</h1>
+    <header class="col-md-4">
+        <nav>
+            <ul class="list-group">
+                <li :class="getClubClass(club)"
+                    v-for="club in clubs"
+                    v-on:click="fetchClubDetails(club)"
+                    style="cursor:pointer">
+                    <span>{{ club.name }}</span>
+                    <div class="buttons">
+                        <span class="glyphicon glyphicon-pencil purple" v-on:click="fetchClubDetails(club) + toEditMode(true)"></span>
+                        <span class="glyphicon glyphicon-trash red" v-on:click="deleteClub()"></span>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <button class="btn btn-warning buttons" v-if="isReadOnly" v-on:click="toEditMode(false)">New</button>
+    </header>
+    <div v-if="currentClub" class="col-md-8">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-2 control-label small">ClubName</label>
+                <div class="col-sm-10">
+                    <input id="clubName" type="text" class="form-control" v-model="currentClub.name" :readonly="isReadOnly" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label small">Streetname</label>
+                <div class="col-sm-10">
+                    <input id="streetname" type="text" class="form-control" v-model="currentClub.streetname" :readonly="isReadOnly" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label small">HouseNumber</label>
+                <div class="col-sm-10">
+                    <input id="housenumber" type="text" class="form-control" v-model="currentClub.housenumber" :readonly="isReadOnly" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label small">PostalCode</label>
+                <div class="col-sm-10">
+                    <input id="postalCode" type="text" class="form-control" v-model="currentClub.postalCode" :readonly="isReadOnly" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label small">City</label>
+                <div class="col-sm-10">
+                    <input id="city" type="text" class="form-control" v-model="currentClub.city" :readonly="isReadOnly" />
+                </div>
+            </div>
+            <div class="buttons">
+                <button id="sendButton" class="btn btn-primary" v-if="!isReadOnly" v-on:click="save() + sendOverSignalR()">Save</button>
+                <button class="btn btn-default" v-if="!isReadOnly" v-on:click="cancel">Cancel</button>
+            </div>
+
+        </div>
+    </div>
+    @*<button id="sendButton" class="btn btn-primary">Save</button>*@
+    <div class="row">
+        <div class="col-sm-4 col-sm-offset-4"><ul id="messagesList"></ul></div>
+    </div>
+</article>
+
+@section scripts{
+    <script src="~/js/vue.js"></script>
+    <script src="~/lib/signalr/dist/browser/signalr.js"></script>
+    <script>
+
+        var url = "@(Model.ApiUrl)clubs";
+        var app = new Vue({
+
+            el: "#app",
+
+            data: {
+                message: "Loading clubs ...",
+                clubs: null,
+                currentClubs: null,
+                originalClub: null,
+                isReadOnly: true,
+                isEdit: false,
+                connection: null
+            },
+
+            created: function () {
+                var self = this;
+                self.fetchClubs();
+                self.SetUpSignalR();
+            },
+
+            methods: {
+
+                sendOverSignalR: function () {
+                    self = this;
+                    let updateMessage = `Club (#${self.currentClub.id}) has been updated.`;
+                    self.connection.invoke("UpdateClub", self.currentClub, self.originalClub, updateMessage).catch(function (err) { return console.error(err.toString()); });
+                    self.updateOriginalClub();
+                },
+
+                fetchClubs: function () {
+                    self = this;
+                    fetch(url)
+                        .then(result => result.json())
+                        .then(function (clubs) {
+                            clubs.forEach(function (club, i) { club.isActive = false; });
+                            self.clubs = clubs;
+                            self.message = "Clubs - overview";
+                            if (self.clubs.length > 0) {
+                                self.fetchClubDetails(self.clubs[0]); }
+                        }).catch(error => console.error("Something went wrong while getting the clubs: " + error));
+                },
+
+                fetchClubDetails: function (club) {
+                    self = this;
+                    if (!self.isReadOnly) return;
+                    fetch(`${url}/${club.id}`)
+                        .then(result => result.json())
+                        .then(function (result) {
+                            self.currentClub = result;
+                            self.setActiveClub(club.id);
+                            self.updateOriginalClub();
+                        });
+                },
+
+                updateOriginalClub: function () {
+                    self.originalClub = {
+                        name: self.currentClub.name,
+                        id: self.currentClub.id,
+                        created: self.currentClub.created,
+                        postalCode: self.currentClub.postalCode,
+                        city: self.currentClub.city,
+                        streetname: self.currentClub.streetname,
+                        housenumber: self.currentClub.housenumber
+                    };
+                },
+
+                setActiveClub: function (clubid) {
+                    self.clubs.forEach(function (club, i) { club.isActive = club.id === clubid ? true : false; });
+                },
+
+                getClubClass: function (club) {
+                    if (club.isActive) return "list-group-item active";
+                    return "list-group-item";
+                },
+
+                toEditMode: function (isEdit) {
+                    self = this;
+                    self.isReadOnly = false;
+                    self.isEdit = isEdit;
+                    if (!isEdit) {
+                        self.currentClub = {
+                            "name": "",
+                            "streetname": "",
+                            "id": 0,
+                            "created": "",
+                            "housenumber": "",
+                            "postalCode": "",
+                            "city": ""
+                        };
+                    }
+                },
+
+                save: function () {
+                    self = this;
+                    var ajaxHeaders = new Headers();
+                    ajaxHeaders.append("Content-Type", "application/json");
+                    var ajaxConfig = {
+                        method: "PUT",
+                        body: JSON.stringify(self.currentClub),
+                        headers: ajaxHeaders
+                    };
+
+                    if (self.isEdit) {
+                        let putClubRequest = new Request(`${url}/${self.currentClub.id}`, ajaxConfig);
+                        fetch(putClubRequest)
+                            .then(result => result.json())
+                            .then(result => {
+                                self.updateList(result);
+                            }).catch(error => console.error("Someting went wrong during with the put request: " + error));
+                    }
+                    else {
+                        ajaxConfig.method = "POST";
+                        let postClubRequest = new Request(`${url}`, ajaxConfig);
+                        fetch(postClubRequest)
+                            .then(result => result.json())
+                            .then(result => {
+                                self.addToList(result);
+                            }).catch(error => console.error("Someting went wrong during with the post request: " + error));
+                    }
+
+                    self.isEdit = false;
+                    self.isReadOnly = true;
+                },
+
+                addToList: function (club) {
+                    self.currentClub.id = club.id;
+                    self.clubs.push(club);
+                    self.fetchClubDetails(self.clubs[self.clubs.length - 1]);
+                },
+
+                updateList: function (club) {
+                    var updatedClub = self.clubs.filter(c => c.id === club.id)[0];
+                    updatedClub.name = club.name;
+                },
+
+                cancel: function (club) {
+                    self = this;
+                    self.isReadOnly = true;
+                    self.isEdit = false;
+
+                    if (self.isEdit) { self.fetchClubDetails(self.currentClub); }
+                    else { self.fetchClubDetails(self.clubs[0]); }
+                },
+
+                deleteClub: function () {
+                    self = this;
+                    fetch(`${url}/${self.currentClub.id}`, { method: "DELETE" })
+                        .then(result => result.json())
+                        .then(function (result) {
+                            self.clubs.forEach(function (club, i) {
+                                if (club.id === self.curentClub.id) {
+                                    self.club.splice(i, 1);
+                                    return;
+                                }
+                            });
+                            if (self.clubs.length > 0) { self.fetchClubDetails(self.clubs[0]); }
+                        }).catch(error => console.error("Someting went wrong during with the delete request: " + error));
+                },
+
+                SetUpSignalR: function () {
+                    self = this;
+                    self.connection = new signalR.HubConnectionBuilder().withUrl("/CaveBaseHub").build();
+                    self.connection.start().catch(function (err) {
+                        return console.error(err.toString());
+                    });
+                }
+            }
+        });
+
+    </script>
+}
+

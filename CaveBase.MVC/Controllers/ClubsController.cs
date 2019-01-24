@@ -50,6 +50,11 @@ namespace CaveBase.MVC.Controllers
             return RedirectToAction("Index");
         }
 
+        public IActionResult IndexVue()
+        {
+            return View(new IndexVueViewModel { ApiUrl = WebApiHelper.apiUrl });
+        }
+
 
     }
 }
