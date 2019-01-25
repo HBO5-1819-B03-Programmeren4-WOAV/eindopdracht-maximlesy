@@ -54,6 +54,52 @@
                         messageList.insertBefore(div, messageList.childNodes[0]);
                     });
 
+                    self.connection.on("ReceiveUpdateClub", function (club, oldclub, message) {
+                        //created li element with correct class
+                        var div = document.createElement("div");
+                        var pNew = document.createElement("p");
+                        var pOld = document.createElement("p");
+                        var updateMessage = document.createElement("p");
+                        div.className = "updateMessage";
+
+                        //add info about the old country, a br and the new info; received from signal R
+                        updateMessage.innerText = message;
+                        pNew.innerText = `INTO: ${club.name} (${club.streetname} ${club.housenumber}, ${club.postalCode} ${club.city})`;
+                        pOld.innerText += `FROM: ${oldclub.name} (${oldclub.streetname} ${oldclub.housenumber}, ${oldclub.postalCode} ${oldclub.city})`;
+
+                        //wrap in div
+                        div.appendChild(updateMessage);
+                        div.appendChild(pOld);
+                        div.appendChild(pNew);
+
+                        //add to messageList
+                        var messageList = document.getElementById("messageList");
+                        messageList.insertBefore(div, messageList.childNodes[0]);
+                    });
+
+                    self.connection.on("ReceiveUpdateCaver", function (caver, oldcaver, message) {
+                        //created li element with correct class
+                        var div = document.createElement("div");
+                        var pNew = document.createElement("p");
+                        var pOld = document.createElement("p");
+                        var updateMessage = document.createElement("p");
+                        div.className = "updateMessage";
+
+                        //add info about the old country, a br and the new info; received from signal R
+                        updateMessage.innerText = message;
+                        pNew.innerText = `INTO: ${caver.firstName} ${caver.lastName}`;
+                        pOld.innerText += `FROM: ${oldcaver.firstName} ${oldcaver.lastName}`;
+
+                        //wrap in div
+                        div.appendChild(updateMessage);
+                        div.appendChild(pOld);
+                        div.appendChild(pNew);
+
+                        //add to messageList
+                        var messageList = document.getElementById("messageList");
+                        messageList.insertBefore(div, messageList.childNodes[0]);
+                    });
+
                     self.connection.start().catch(function (err) {
                         return console.error(err.toString());
                     });

@@ -13,5 +13,17 @@ namespace CaveBase.MVC.Hubs
         {
             await Clients.All.SendAsync("ReceiveUpdateCountry", newcountry, oldCountry, message);
         }
+
+        public async Task UpdateClub(Club newClub, Club oldClub, string message)
+        {
+            await Clients.All.SendAsync("ReceiveUpdateClub", newClub, oldClub, message);
+        }
+
+        public async Task UpdateCaver(Caver newCaver, Caver oldCaver, string message)
+        {
+            await Clients.All.SendAsync("ReceiveUpdateCaver", newCaver, oldCaver, message);
+        }
+
+
     }
 }

@@ -28,6 +28,10 @@ body {
     margin: 15px;
 }
 
+.margin-bottom{
+    margin-bottom: 100px;
+}
+
 .countryTitle {
     color: darkblue;
     font-size: small;

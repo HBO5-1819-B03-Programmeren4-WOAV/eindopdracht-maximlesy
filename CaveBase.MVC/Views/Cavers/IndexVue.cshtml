@@ -1,0 +1,219 @@
+﻿@using CaveBase.MVC.ViewModels.Cavers
+@model IndexVueViewModel
+<article id="app" class="row">
+    <h1>{{ message }}</h1>
+    <header class="col-md-4 margin-bottom">
+        <nav>
+            <ul class="list-group">
+                <li :class="getCaverClass(caver)"
+                    v-for="caver in cavers"
+                    v-on:click="fetchCaverDetails(caver)"
+                    style="cursor:pointer">
+                    <span>{{ caver.firstName }}</span>
+                    <div class="buttons">
+                        <span class="glyphicon glyphicon-pencil purple" v-on:click="fetchCaverDetails(caver) + toEditMode(true)"></span>
+                        <span class="glyphicon glyphicon-trash red" v-on:click="deleteCaver()"></span>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <button class="btn btn-warning buttons" v-if="isReadOnly" v-on:click="toEditMode(false)">New</button>
+    </header>
+    <div v-if="currentCaver" class="col-md-8">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-2 control-label small">FirstName</label>
+                <div class="col-sm-10">
+                    <input id="firstName" type="text" class="form-control" v-model="currentCaver.firstName" :readonly="isReadOnly" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label small">LastName</label>
+                <div class="col-sm-10">
+                    <input id="lastName" type="text" class="form-control" v-model="currentCaver.lastName" :readonly="isReadOnly" />
+                </div>
+            </div>
+            <div class="buttons">
+                <button id="sendButton" class="btn btn-primary" v-if="!isReadOnly" v-on:click="save() + sendOverSignalR()">Save</button>
+                <button class="btn btn-default" v-if="!isReadOnly" v-on:click="cancel">Cancel</button>
+            </div>
+
+        </div>
+    </div>
+    @*<button id="sendButton" class="btn btn-primary">Save</button>*@
+    <div class="row">
+        <div class="col-sm-4 col-sm-offset-4"><ul id="messagesList"></ul></div>
+    </div>
+</article>
+
+@section scripts{
+    <script src="~/js/vue.js"></script>
+    <script src="~/lib/signalr/dist/browser/signalr.js"></script>
+    <script>
+
+        var url = "@(Model.ApiUrl)cavers";
+        var app = new Vue({
+
+            el: "#app",
+
+            data: {
+                message: "Loading cavers ...",
+                cavers: null,
+                currentCaver: null,
+                originalCaver: null,
+                isReadOnly: true,
+                isEdit: false,
+                connection: null
+            },
+
+            created: function () {
+                var self = this;
+                self.fetchCavers();
+                self.SetUpSignalR();
+            },
+
+            methods: {
+
+                sendOverSignalR: function () {
+                    self = this;
+                    let updateMessage = `Caver (#${self.currentCaver.id}) has been updated.`;
+                    self.connection.invoke("UpdateCaver", self.currentCaver, self.originalCaver, updateMessage).catch(function (err) { return console.error(err.toString()); });
+                    self.updateOriginalCaver();
+                },
+
+                fetchCavers: function () {
+                    self = this;
+                    fetch(url)
+                        .then(result => result.json())
+                        .then(function (cavers) {
+                            cavers.forEach(function (caver, i) { caver.isActive = false; });
+                            self.cavers = cavers;
+                            self.message = "cavers - overview";
+                            if (self.cavers.length > 0) {
+                                self.fetchCaverDetails(self.cavers[0]); }
+                        }).catch(error => console.error("Something went wrong while getting the cavers: " + error));
+                },
+
+                fetchCaverDetails: function (caver) {
+                    self = this;
+                    if (!self.isReadOnly) return;
+                    fetch(`${url}/${caver.id}`)
+                        .then(result => result.json())
+                        .then(function (result) {
+                            self.currentCaver = result;
+                            self.setActiveCaver(caver.id);
+                            self.updateOriginalCaver();
+                        });
+                },
+
+                updateOriginalCaver: function () {
+                    self.originalCaver = {
+                        id: self.currentCaver.id,
+                        created: self.currentCaver.created,
+                        firstName: self.currentCaver.firstName,
+                        lastName: self.currentCaver.lastName
+                    };
+                },
+
+                setActiveCaver: function (caverid) {
+                    self.cavers.forEach(function (caver, i) { caver.isActive = caver.id === caverid ? true : false; });
+                },
+
+                getCaverClass: function (caver) {
+                    if (caver.isActive) return "list-group-item active";
+                    return "list-group-item";
+                },
+
+                toEditMode: function (isEdit) {
+                    self = this;
+                    self.isReadOnly = false;
+                    self.isEdit = isEdit;
+                    if (!isEdit) {
+                        self.currentCaver = {
+                            "firstName": "",
+                            "lastName": "",
+                            "id": 0,
+                            "created": ""
+                        };
+                    }
+                },
+
+                save: function () {
+                    self = this;
+                    var ajaxHeaders = new Headers();
+                    ajaxHeaders.append("Content-Type", "application/json");
+                    var ajaxConfig = {
+                        method: "PUT",
+                        body: JSON.stringify(self.currentCaver),
+                        headers: ajaxHeaders
+                    };
+
+                    if (self.isEdit) {
+                        let putCaverRequest = new Request(`${url}/${self.currentCaver.id}`, ajaxConfig);
+                        fetch(putCaverRequest)
+                            .then(result => result.json())
+                            .then(result => {
+                                self.updateList(result);
+                            }).catch(error => console.error("Someting went wrong during with the put request: " + error));
+                    }
+                    else {
+                        ajaxConfig.method = "POST";
+                        let postCaverRequest = new Request(`${url}`, ajaxConfig);
+                        fetch(postCaverRequest)
+                            .then(result => result.json())
+                            .then(result => {
+                                self.addToList(result);
+                            }).catch(error => console.error("Someting went wrong during with the post request: " + error));
+                    }
+
+                    self.isEdit = false;
+                    self.isReadOnly = true;
+                },
+
+                addToList: function (caver) {
+                    self.currentCaver.id = caver.id;
+                    self.cavers.push(caver);
+                    self.fetchCaverDetails(self.cavers[self.cavers.length - 1]);
+                },
+
+                updateList: function (caver) {
+                    var updatedCaver = self.cavers.filter(c => c.id === caver.id)[0];
+                    updatedCaver.firstName = caver.firstName;
+                },
+
+                cancel: function (caver) {
+                    self = this;
+                    self.isReadOnly = true;
+                    self.isEdit = false;
+
+                    if (self.isEdit) { self.fetchCaverDetails(self.currentCaver); }
+                    else { self.fetchCaverDetails(self.cavers[0]); }
+                },
+
+                deleteCaver: function () {
+                    self = this;
+                    fetch(`${url}/${self.currentCaver.id}`, { method: "DELETE" })
+                        .then(result => result.json())
+                        .then(function (result) {
+                            self.cavers.forEach(function (caver, i) {
+                                if (caver.id === self.currentCaver.id) {
+                                    self.cavers.splice(i, 1);
+                                    return;
+                                }
+                            });
+                            if (self.cavers.length > 0) { self.fetchCaverDetails(self.cavers[0]); }
+                        }).catch(error => console.error("Someting went wrong during with the delete request: " + error));
+                },
+
+                SetUpSignalR: function () {
+                    self = this;
+                    self.connection = new signalR.HubConnectionBuilder().withUrl("/CaveBaseHub").build();
+                    self.connection.start().catch(function (err) {
+                        return console.error(err.toString());
+                    });
+                }
+            }
+        });
+
+    </script>
+}
