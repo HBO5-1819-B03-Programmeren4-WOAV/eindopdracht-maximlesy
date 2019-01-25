@@ -15,6 +15,11 @@ namespace CaveBase.MVC.Controllers
             return View(new IndexViewModel { Caves = WebApiHelper.GetApiResult<List<CaveBasic>>(caveBasic) });
         }
 
+        public IActionResult IndexVue()
+        {
+            return View(new IndexVueViewModel { ApiUrl = WebApiHelper.apiUrl });
+        }
+
         public IActionResult Detailed(int id)
         {
             return View(new DetailedCaveViewModel { CaveDetail = WebApiHelper.GetApiResult<CaveDetail>($"{CaveApi.BaseUrl}/caves/detailed/{id}") });

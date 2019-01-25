@@ -24,6 +24,11 @@ namespace CaveBase.MVC.Hubs
             await Clients.All.SendAsync("ReceiveUpdateCaver", newCaver, oldCaver, message);
         }
 
+        public async Task UpdateCave(Cave newCave, Cave oldCave, string message)
+        {
+            await Clients.All.SendAsync("ReceiveUpdateCave", newCave, oldCave, message);
+        }
+
 
     }
 }

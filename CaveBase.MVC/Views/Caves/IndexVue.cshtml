@@ -1,0 +1,287 @@
+﻿@using CaveBase.MVC.ViewModels.Caves
+@model IndexVueViewModel
+<article id="app" class="row">
+    <h1>{{ message }}</h1>
+    <header class="col-md-4 margin-bottom">
+        <nav>
+            <ul class="list-group">
+                <li :class="getCaveClass(cave)"
+                    v-for="cave in caves"
+                    v-on:click="fetchCaveDetails(cave)"
+                    style="cursor:pointer">
+                    <span>{{ cave.name }}</span>
+                    <div class="buttons">
+                        <span class="glyphicon glyphicon-pencil purple" v-on:click="fetchCaveDetails(cave) + toEditMode(true)"></span>
+                        <span class="glyphicon glyphicon-trash red" v-on:click="deleteCave()"></span>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <button class="btn btn-warning buttons" v-if="isReadOnly" v-on:click="toEditMode(false)">New</button>
+    </header>
+    <div v-if="currentCave" class="col-md-8">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-2 control-label small">CaveName</label>
+                <div class="col-sm-10">
+                    <input id="caveName" type="text" class="form-control" v-model="currentCave.name" :readonly="isReadOnly" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label small">Description</label>
+                <div class="col-sm-10">
+                    <input id="description" type="text" class="form-control" v-model="currentCave.description" :readonly="isReadOnly" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label small">Longitude</label>
+                <div class="col-sm-10">
+                    <input id="longitude" type="number" min="-180" max="180" class="form-control" v-model="currentCave.longitude" :readonly="isReadOnly" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label small">Latitude</label>
+                <div class="col-sm-10">
+                    <input id="latitude" type="number" min="-90" max="90" class="form-control" v-model="currentCave.latitude" :readonly="isReadOnly" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label small">Length</label>
+                <div class="col-sm-10">
+                    <input id="length" type="number" class="form-control" v-model="currentCave.length" :readonly="isReadOnly" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label small">Depth</label>
+                <div class="col-sm-10">
+                    <input id="depth" type="number" class="form-control" v-model="currentCave.depth" :readonly="isReadOnly" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label small">Difficulty</label>
+                <div class="col-sm-10">
+                    <input id="difficulty" type="number" min="0" max="5" class="form-control" v-model="currentCave.difficulty" :readonly="isReadOnly" />
+                </div>
+            </div>
+            <div class="buttons">
+                <button id="sendButton" class="btn btn-primary" v-if="!isReadOnly" v-on:click="save() + sendOverSignalR()">Save</button>
+                <button class="btn btn-default" v-if="!isReadOnly" v-on:click="cancel">Cancel</button>
+            </div>
+
+        </div>
+    </div>
+    @*<button id="sendButton" class="btn btn-primary">Save</button>*@
+    <div class="row">
+        <div class="col-sm-4 col-sm-offset-4"><ul id="messagesList"></ul></div>
+    </div>
+</article>
+
+@section scripts{
+    <script src="~/js/vue.js"></script>
+    <script src="~/lib/signalr/dist/browser/signalr.js"></script>
+    <script>
+
+        var url = "@(Model.ApiUrl)caves";
+        var app = new Vue({
+
+            el: "#app",
+
+            data: {
+                message: "Loading caves ...",
+                caves: null,
+                countries: null,
+                clubs: null,
+                currentCave: null,
+                originalCave: null,
+                isReadOnly: true,
+                isEdit: false,
+                connection: null
+            },
+
+            created: function () {
+                var self = this;
+                self.fetchCaves();
+                self.fetchCountries();
+                self.fetchCaves();
+                self.SetUpSignalR();
+            },
+
+            methods: {
+
+                sendOverSignalR: function () {
+                    self = this;
+                    let updateMessage = `Cave (#${self.currentCave.id}) has been updated.`;
+                    self.connection.invoke("UpdateCave", self.currentCave, self.originalCave, updateMessage).catch(function (err) { return console.error(err.toString()); });
+                    self.updateOriginalCave();
+                },
+
+                fetchCountries: function () {
+                    self = this;
+                    fetch("@(Model.ApiUrl)countries")
+                        .then(result => result.json())
+                        .then(function (result) { self.countries = result; })
+                        .catch(error => console.error("Something went wrong while getting the countries: " + error));
+                },
+
+                fetchClubs: function () {
+                    self = this;
+                    fetch("@(Model.ApiUrl)clubs")
+                        .then(result => result.json())
+                        .then(function (result) { self.clubs = result; })
+                        .catch(error => console.error("Something went wrong while getting the countries: " + error));
+                },
+
+                fetchCaves: function () {
+                    self = this;
+                    fetch(url)
+                        .then(result => result.json())
+                        .then(function (caves) {
+                            caves.forEach(function (cave, i) { cave.isActive = false; });
+                            self.caves = caves;
+                            self.message = "caves - overview";
+                            if (self.caves.length > 0) {
+                                self.fetchCaveDetails(self.caves[0]); }
+                        }).catch(error => console.error("Something went wrong while getting the caves: " + error));
+                },
+
+                fetchCaveDetails: function (cave) {
+                    self = this;
+                    if (!self.isReadOnly) return;
+                    fetch(`${url}/${cave.id}`)
+                        .then(result => result.json())
+                        .then(function (result) {
+                            self.currentCave = result;
+                            self.setActiveCave(cave.id);
+                            self.updateOriginalCave();
+                        });
+                },
+
+                updateOriginalCave: function () {
+                    self.originalCave = {
+                        id: self.currentCave.id,
+                        created: self.currentCave.created,
+                        name: self.currentCave.name,
+                        description: self.currentCave.description,
+                        longitude: self.currentCave.longitude,
+                        latitude: self.currentCave.latitude,
+                        depth: self.currentCave.depth,
+                        length: self.currentCave.length,
+                        isDivingCave: self.currentCave.isDivingCave,
+                        hasFormations: self.currentCave.hasFormations,
+                        difficulty: self.currentCave.difficulty,
+                        club: self.currentCave.club,
+                        country: self.currentCave.country
+                    };
+                },
+
+                setActiveCave: function (caveid) {
+                    self.caves.forEach(function (cave, i) { cave.isActive = cave.id === caveid ? true : false; });
+                },
+
+                getCaveClass: function (cave) {
+                    if (cave.isActive) return "list-group-item active";
+                    return "list-group-item";
+                },
+
+                toEditMode: function (isEdit) {
+                    self = this;
+                    self.isReadOnly = false;
+                    self.isEdit = isEdit;
+                    if (!isEdit) {
+                        self.currentCave = {
+                            "name": "",
+                            "description": "",
+                            "id": 0,
+                            "created": "",
+                            "longitude": "",
+                            "latitude": "",
+                            "depth": "",
+                            "length": "",
+                            "isDivingCave": false,
+                            "hasFormations": false,
+                            "difficulty": "",
+                            "club": null,
+                            "country": null
+                        };
+                    }
+                },
+
+                save: function () {
+                    self = this;
+                    var ajaxHeaders = new Headers();
+                    ajaxHeaders.append("Content-Type", "application/json");
+                    var ajaxConfig = {
+                        method: "PUT",
+                        body: JSON.stringify(self.currentCave),
+                        headers: ajaxHeaders
+                    };
+
+                    if (self.isEdit) {
+                        let putCaveRequest = new Request(`${url}/${self.currentCave.id}`, ajaxConfig);
+                        fetch(putCaveRequest)
+                            .then(result => result.json())
+                            .then(result => {
+                                self.updateList(result);
+                            }).catch(error => console.error("Someting went wrong during with the put request: " + error));
+                    }
+                    else {
+                        ajaxConfig.method = "POST";
+                        let postCaveRequest = new Request(`${url}`, ajaxConfig);
+                        fetch(postCaveRequest)
+                            .then(result => result.json())
+                            .then(result => {
+                                self.addToList(result);
+                            }).catch(error => console.error("Someting went wrong during with the post request: " + error));
+                    }
+
+                    self.isEdit = false;
+                    self.isReadOnly = true;
+                },
+
+                addToList: function (cave) {
+                    self.currentCave.id = cave.id;
+                    self.caves.push(cave);
+                    self.fetchCaveDetails(self.caves[self.caves.length - 1]);
+                },
+
+                updateList: function (cave) {
+                    var updatedCave = self.caves.filter(c => c.id === cave.id)[0];
+                    updatedCave.name = cave.name;
+                },
+
+                cancel: function (cave) {
+                    self = this;
+                    self.isReadOnly = true;
+                    self.isEdit = false;
+
+                    if (self.isEdit) { self.fetchCaveDetails(self.currentCave); }
+                    else { self.fetchCaveDetails(self.caves[0]); }
+                },
+
+                deleteCave: function () {
+                    self = this;
+                    fetch(`${url}/${self.currentCave.id}`, { method: "DELETE" })
+                        .then(result => result.json())
+                        .then(function (result) {
+                            self.caves.forEach(function (cave, i) {
+                                if (cave.id === self.curentCave.id) {
+                                    self.cave.splice(i, 1);
+                                    return;
+                                }
+                            });
+                            if (self.caves.length > 0) { self.fetchCaveDetails(self.caves[0]); }
+                        }).catch(error => console.error("Someting went wrong during with the delete request: " + error));
+                },
+
+                SetUpSignalR: function () {
+                    self = this;
+                    self.connection = new signalR.HubConnectionBuilder().withUrl("/CaveBaseHub").build();
+                    self.connection.start().catch(function (err) {
+                        return console.error(err.toString());
+                    });
+                }
+            }
+        });
+
+    </script>
+}
