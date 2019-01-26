@@ -101,22 +101,62 @@
                     });
 
                     self.connection.on("ReceiveUpdateCave", function (cave, oldcave, message) {
-                        //created li element with correct class
+
                         var div = document.createElement("div");
-                        var pNew = document.createElement("p");
-                        var pOld = document.createElement("p");
-                        var updateMessage = document.createElement("p");
+                        var table = document.createElement("table");
+                        var tableBody = document.createElement("tbody");
+                        var row = document.createElement("tr");
+                        var topleftEmptyTd = document.createElement("td");
+                        var newCaveTd = document.createElement("td");
+                        newCaveTd.innerHTML = "updated cave".bold();
+                        newCaveTd.style.paddingLeft = "20px";
                         div.className = "updateMessage";
 
-                        //add info about the old country, a br and the new info; received from signal R
-                        updateMessage.innerText = message;
-                        pNew.innerText = `INTO: ${cave.name}, ${cave.description}, coordinates: ${cave.longitude}/${cave.latitude}, L/D: ${cave.length}/${cave.depth}`;
-                        pOld.innerText += `EDITED CAVE: ${oldcave.name}`;
+                        row.appendChild(topleftEmptyTd);
+                        row.appendChild(newCaveTd);
+                        tableBody.appendChild(row);
+                        
 
-                        //wrap in div
-                        div.appendChild(updateMessage);
-                        div.appendChild(pOld);
-                        div.appendChild(pNew);
+                        for (i = 0; i < Object.keys(cave).length; i++) {
+                            let caveInfoRow = document.createElement("tr");
+                            let title = document.createElement("td");
+                            let newInfo = document.createElement("td");
+                            newInfo.style.paddingLeft = "20px";
+
+                            //get the property name of the current property
+                            var key = Object.keys(cave)[i];
+
+                            //if the value of property x != null ...
+                            if (cave[key] !== null) {
+                                // ... then go grab the value of the property, but not for country and club (they are nested objects ...)
+                                if (Object.keys(cave)[i] !== "country" && Object.keys(cave)[i] !== "club") {
+                                    newInfo.textContent = cave[key].toString();
+                                }
+                                else {
+                                    //this is a country or a club
+                                    newInfo.textContent = cave[key].name.toString();
+                                }                                
+                            }
+                            else {
+                                //the property is null ...
+                                newInfo.textContent = "empty";
+                            }
+
+                            //title = propertyname
+                            title.innerHTML = key.toString().bold();
+                            title.style.padding = "3px 3px 3px 3px ";
+                            caveInfoRow.appendChild(title);
+
+                            //add values of the new and old cave
+                            caveInfoRow.appendChild(newInfo);
+
+                            //append new values to tablebody
+                            tableBody.appendChild(caveInfoRow);
+                        }
+
+                        table.appendChild(tableBody);
+                        div.appendChild(table);
+
 
                         //add to messageList
                         var messageList = document.getElementById("messageList");
