@@ -63,11 +63,28 @@
                     <input id="difficulty" type="number" min="0" max="5" class="form-control" v-model="currentCave.difficulty" :readonly="isReadOnly" />
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label small">Responsible club</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" :value="currentCave.club.name" v-if="isReadOnly" :readonly="isReadOnly">
+                    <select v-model="currentCave.club" class="form-control" v-if="!isReadOnly">
+                        <option v-for="club in clubs" :value="club">{{ club.name }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label small">Country</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" :value="currentCave.country.name" v-if="isReadOnly" :readonly="isReadOnly">
+                    <select v-model="currentCave.country" class="form-control" v-if="!isReadOnly">
+                        <option v-for="country in countries" :value="country">{{ country.name }}</option>
+                    </select>
+                </div>
+            </div>
             <div class="buttons">
                 <button id="sendButton" class="btn btn-primary" v-if="!isReadOnly" v-on:click="save() + sendOverSignalR()">Save</button>
                 <button class="btn btn-default" v-if="!isReadOnly" v-on:click="cancel">Cancel</button>
             </div>
-
         </div>
     </div>
     @*<button id="sendButton" class="btn btn-primary">Save</button>*@
@@ -81,7 +98,7 @@
     <script src="~/lib/signalr/dist/browser/signalr.js"></script>
     <script>
 
-        var url = "@(Model.ApiUrl)caves";
+        var url = "@(Model.ApiUrl)caves/";
         var app = new Vue({
 
             el: "#app",
@@ -102,7 +119,7 @@
                 var self = this;
                 self.fetchCaves();
                 self.fetchCountries();
-                self.fetchCaves();
+                self.fetchClubs();
                 self.SetUpSignalR();
             },
 
@@ -133,7 +150,7 @@
 
                 fetchCaves: function () {
                     self = this;
-                    fetch(url)
+                    fetch(`${url}basic`)
                         .then(result => result.json())
                         .then(function (caves) {
                             caves.forEach(function (cave, i) { cave.isActive = false; });
@@ -208,6 +225,10 @@
 
                 save: function () {
                     self = this;
+
+                    self.currentCave.clubId = self.currentCave.club.id;
+                    self.currentCave.CountryId = self.currentCave.country.id;
+
                     var ajaxHeaders = new Headers();
                     ajaxHeaders.append("Content-Type", "application/json");
                     var ajaxConfig = {

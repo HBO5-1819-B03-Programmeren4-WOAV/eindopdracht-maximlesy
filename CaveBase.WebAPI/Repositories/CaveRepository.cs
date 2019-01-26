@@ -38,5 +38,13 @@ namespace CaveBase.WebAPI.Repositories
                                                         .Include(c => c.Country)
                                                         .FirstOrDefaultAsync(c => c.Id == id));
         }
+
+        //overrides
+        public override async Task<Cave> GetById(int id)
+        {
+            return await database.Caves.Include(cave => cave.Club)
+                                       .Include(cave => cave.Country)
+                                       .FirstOrDefaultAsync(cave => cave.Id == id);
+        }
     }
 }
