@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using CaveBase.Library.DTO;
@@ -70,10 +71,17 @@ namespace CaveBase.WebAPI.Controllers
         [Route("upload/image")]
         public async Task<IActionResult> UploadImage(IFormFile uploadImg)
         {
+            //create a unique identifier
+            var ticks = new DateTime(2000, 1, 1).Ticks;
+            var ans = DateTime.Now.Ticks - ticks;
+            string uniqueId = ans.ToString("X"); //to hex notation
+
+            string uniqueName = $"{uniqueId}{uploadImg.FileName}";
+
             //uploadImg or fileName could be null
             try
             {
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", uploadImg.FileName);
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", uniqueName);
 
                 if (uploadImg.Length > 0)
                 {
@@ -88,7 +96,7 @@ namespace CaveBase.WebAPI.Controllers
                 Console.Write("Image could not be uploaded.");
                 return BadRequest(new { success = false });
             }
-            return Ok(new { filename = uploadImg.FileName, sizeInBytes = uploadImg.Length, success = true });
+            return Ok(new { filename = uniqueName, sizeInBytes = uploadImg.Length, success = true });
         }
 
     }
