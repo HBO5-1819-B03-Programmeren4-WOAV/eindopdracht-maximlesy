@@ -4,29 +4,113 @@
 @{
     ViewData["Title"] = "Detailed Cave Overview";
 }
-
-<h1>Detailed Cave Overview</h1>
-
-<div class="panel panel-default">
-    <div class="panel-heading">@Model.CaveDetail.Name (Cave #@Model.CaveDetail.Id, Difficulty: @Model.CaveDetail.Difficulty.ToString())</div>
-    <div class="panel-body">
-        <h2>Facts:</h2>
-        <ul>
-            <li>Country: @Model.CaveDetail.CountryName</li>
-            <li>Longitude: @Model.CaveDetail.Longitude</li>
-            <li>Latitude: @Model.CaveDetail.Latitude</li>
-            <li>Length: @Model.CaveDetail.Length</li>
-            <li>Depth: @Model.CaveDetail.Depth</li>
-            @Html.Raw((Model.CaveDetail.IsDivingCave == true) ? "<li>Diving cave</li>" : "<li>No diving</li>")
-            @Html.Raw((Model.CaveDetail.HasFormations == true) ? "<li>Formations in cave</li>" : "<li>No formations in cave</li>")
-        </ul>
-        <h2>Description:</h2>
-        <p>@Model.CaveDetail.Description</p>
-        <h2>Photo:</h2>
-        <img width="200" src="https://localhost:44334/api/caves/imagebyname/@Model.CaveDetail.PhotoName" alt="@Model.CaveDetail.PhotoName" />
-        <h2>Contact</h2>
-        <p>This cave is being maintained by @Model.CaveDetail.ClubName. Contact them for information.</p>
+<div id="app">
+    <div class="panel panel-default">
+        <div class="panel-heading">{{cave.name}} (Cave #{{cave.id}}, Difficulty: {{cave.difficulty}})</div>
+        <div class="panel-body">
+                <h2>Facts:</h2>
+                <ul>
+                    <li>Country: {{cave.countryName}}</li>
+                    <li>Longitude: {{cave.longitude}}</li>
+                    <li>Latitude: {{cave.latitude}}</li>
+                    <li>Length: {{cave.length}}</li>
+                    <li>Depth: {{cave.depth}}</li>
+                    <li v-if="cave.isDivingCave">Diving cave</li>
+                    <li v-else>Not a diving cave</li>
+                    <li v-if="cave.hasFormations">Has formations</li>
+                    <li v-else>Doesn't have formations</li>
+                </ul>
+                <h2>Description:</h2>
+                <p>{{cave.description}}</p>
+                <h2>Photo:</h2>
+                <img width="200" :src="photoUrl" alt="caveImage" />
+                <h2>Contact</h2>
+                <p>This cave is being maintained by {{cave.clubName}}. Contact them for information.</p>
+            </div>
+            @*<div class="panel-footer"><a asp-controller="Caves" asp-action="Index" class="btn btn-primary">Back to list</a></div>*@
     </div>
-    <div class="panel-footer"><a asp-controller="Caves" asp-action="Index" class="btn btn-primary">Back to list</a></div>
 </div>
 
+
+@section Scripts {
+    <script src="~/js/vue.js"></script>
+    <script src="~/lib/signalr/dist/browser/signalr.js"></script>
+    <script>
+        var app = new Vue({
+            el: "#app",
+
+            data: {
+                cave: {
+                    "id": 0,
+                    "name": "",
+                    "difficulty": 0,
+                    "countryName": "",
+                    "longitude": "",
+                    "latitude": "",
+                    "length": 0,
+                    "depth": 0,
+                    "description": "",
+                    "clubName": "",
+                    "isDivingCave": false,
+                    "hasFormations": false
+
+                },
+                photoUrl: "",
+                connection: null
+            },
+
+            created: function () {
+                var self = this;
+                self.fetchCaveDetails();
+                self.setUpSignalR();
+            },
+
+            methods: {
+
+                Test: function () {
+                    self = this;
+                    return "https://localhost:44334/api/caves/imagebyname/" + self.cave.photoName;
+                },
+
+                fetchCaveDetails: function (cave) {
+                    self = this;
+                    fetch("@(Model.ApiUrl)caves/detailed/@Model.Id")
+                        .then(result => result.json())
+                        .then(function (result) {
+                            self.cave = result;
+                            self.photoUrl = "https://localhost:44334/api/caves/imagebyname/" + self.cave.photoName;
+                        });
+                },
+
+                setUpSignalR: function () {
+                    self = this;
+
+                    self.connection = new signalR.HubConnectionBuilder().withUrl("/CaveBaseHub").build();
+
+                    self.connection.start().catch(function (err) {
+                        return console.error(err.toString());
+                    });
+
+                    self.connection.on("ReceiveUpdateCave", function (cave, oldcave, message) {
+                        //we use a CaveDetail object, while we receive a composite object, so we construct it here ourselves.
+                        self.cave.countryName = cave.country.name;
+                        self.cave.clubName = cave.club.name;
+
+                        self.cave.id = cave.id;
+                        self.cave.name = cave.name;
+                        self.cave.difficulty = cave.difficulty;
+                        self.cave.longitude = cave.longitude;
+                        self.cave.latitude = cave.latitude;
+                        self.cave.depth = cave.depth;
+                        self.cave.length = cave.length;
+                        self.cave.isDivingCave = cave.isDivingCave;
+                        self.cave.hasFormations = cave.hasFormations;
+                        self.cave.description = cave.description;
+                        self.cave.photoName = cave.photoName;
+                    });
+                }
+            }
+
+        });
+    </script>
+}

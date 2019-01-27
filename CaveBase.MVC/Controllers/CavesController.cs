@@ -22,7 +22,7 @@ namespace CaveBase.MVC.Controllers
 
         public IActionResult Detailed(int id)
         {
-            return View(new DetailedCaveViewModel { CaveDetail = WebApiHelper.GetApiResult<CaveDetail>($"{CaveApi.BaseUrl}/caves/detailed/{id}") });
+            return View(new DetailedCaveViewModel { ApiUrl = WebApiHelper.apiUrl, Id = id });
         }
 
         public IActionResult UploadCenter()

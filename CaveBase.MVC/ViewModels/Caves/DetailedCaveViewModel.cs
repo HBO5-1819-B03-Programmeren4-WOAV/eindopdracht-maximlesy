@@ -10,5 +10,7 @@ namespace CaveBase.MVC.ViewModels.Caves
     public class DetailedCaveViewModel
     {
         public CaveDetail CaveDetail { get; set; }
+        public string ApiUrl { get; set; }
+        public int Id { get; set; }
     }
 }
