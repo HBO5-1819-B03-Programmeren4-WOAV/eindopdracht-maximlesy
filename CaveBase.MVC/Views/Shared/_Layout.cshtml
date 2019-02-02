@@ -26,10 +26,11 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Caves" asp-action="Index" class="navbar-brand">CaveBase.MVC</a>
+                <a asp-controller="Home" asp-action="Index" style="color:lightyellow;" class="navbar-brand">Happening NOW</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
+                    <li><a asp-controller="Caves" asp-action="Index" style="color:lightyellow;">Caves (for users)</a></li>
                     <li><a asp-controller="Caves" asp-action="IndexVue">Caves</a></li>
                     <li><a asp-controller="Clubs" asp-action="IndexVue">Clubs</a></li>
                     <li><a asp-controller="Cavers" asp-action="IndexVue">Cavers</a></li>
