@@ -61,12 +61,14 @@
                 <label class="col-sm-2 control-label small">Has Formations?</label>
                 <div class="col-sm-10">
                     <input id="hasFormations" type="checkbox" v-model="currentCave.hasFormations" :disabled="isReadOnly" />
+                    <label for="hasFormations"> - {{currentCave.hasFormations}}</label>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label small">Is Diving Cave?</label>
                 <div class="col-sm-10">
                     <input id="isDivingCave" type="checkbox" v-model="currentCave.isDivingCave" :disabled="isReadOnly" />
+                    <label for="isDivingCave"> - {{currentCave.isDivingCave}}</label>
                 </div>
             </div>
             <div class="form-group">
